@@ -1,6 +1,6 @@
 import { Arg, ArgType, NativeFunction } from '@tryforge/forgescript';
 import { ForgeLink } from '@structures/ForgeLink';
-import { KazagumoTrack } from 'kazagumo';
+
 
 export default new NativeFunction({
     name: '$queueHistory',
@@ -14,10 +14,10 @@ export default new NativeFunction({
     ],
     output: ArgType.Json,
     execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo;
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        const player = kazagumo.getPlayer(guild.id ?? ctx.guild.id);
-        if (!player) return this.customError("No player found!");
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id)); 
+if (!player) return this.customError("No player found!");
 
         const historyTracks = [];
 
@@ -26,10 +26,12 @@ export default new NativeFunction({
         if (previousTracks.length) {
             for (const track of previousTracks) {
                 historyTracks.push({
-                    trackSource: track.sourceName,
-                    trackTitle: track.title,
-                    trackAuthor: track.author,
-                    trackUri: track.uri
+                    trackSource: track.info.sourceName,
+                    trackTitle: track.info.title,
+                    trackAuthor: track.info.author,
+                    trackUri: track.info.uri,
+                    length: track.info.duration,
+                    requester: track.requester
                 });
             }
         }

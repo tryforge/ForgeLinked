@@ -11,17 +11,17 @@ export default new NativeFunction({
         Arg.requiredGuild('Guild ID', 'The ID of the guild to check the player for.')
     ],
     output: ArgType.Boolean,
-    execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo;
+   execute: async function(ctx, [guild = ctx.guild]) {
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id)); 
-        if (!player) return this.customError("No player found!");
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id)); 
+if (!player) return this.customError("No player found!");
 
         
         const hasPrevious = player.queue.previous?.[0];
         const currentTrack = player.queue.current;
 
-        const isValid = !!(hasPrevious && currentTrack && hasPrevious.uri !== currentTrack.uri);
+        const isValid = !!(hasPrevious && currentTrack && hasPrevious.info.uri !== currentTrack.info.uri);
 
         return this.success(isValid);
     }

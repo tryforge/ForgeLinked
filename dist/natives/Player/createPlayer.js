@@ -5,7 +5,6 @@ const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new forgescript_1.NativeFunction({
     name: '$createPlayer',
     description: 'Creates a new music player in the given guild.',
-    version: "1.0.0",
     brackets: true,
     unwrap: true,
     args: [
@@ -22,12 +21,13 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.Boolean,
     execute: async function (ctx, [guild, voiceChannel, textChannel]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).kazagumo;
-        await kazagumo.createPlayer({
+        const lavalink = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).lavalink;
+        await lavalink.createPlayer({
             guildId: guild.id,
-            textId: (textChannel ?? ctx.channel).id,
-            voiceId: voiceChannel.id
+            textChannelId: (textChannel ?? ctx.channel).id,
+            voiceChannelId: voiceChannel.id,
+            volume: 100
         });
-        return this.success(kazagumo.players.has(guild.id));
+        return this.success(lavalink.players.has(guild.id));
     }
 });

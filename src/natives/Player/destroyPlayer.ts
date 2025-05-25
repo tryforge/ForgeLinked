@@ -1,6 +1,8 @@
 import { Arg, ArgType, NativeFunction } from '@tryforge/forgescript'
 import type { BaseChannel, VoiceBasedChannel } from 'discord.js'
 import { ForgeLink } from '@structures/ForgeLink'
+import { LavalinkManager } from '@managers/LavalinkCommandManager'
+import { Player } from 'lavalink-client/dist/types'
 
 export default new NativeFunction({
     name: '$destroyPlayer',
@@ -13,12 +15,10 @@ export default new NativeFunction({
     ],
     output: ArgType.Boolean,
     execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
-
-
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
         try {
-            await kazagumo.destroyPlayer((guild.id ?? ctx.guild.id));
+            await lavalink.destroyPlayer((guild.id ?? ctx.guild.id));
             return this.success();
         } catch (error) {
             console.error(`[Player Error] Failed to destroy player of "${guild.id}":`, error);

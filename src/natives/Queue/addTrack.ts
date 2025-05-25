@@ -1,6 +1,6 @@
-import { Arg, ArgType, NativeFunction } from '@tryforge/forgescript'
-import type { BaseChannel, VoiceBasedChannel } from 'discord.js'
-import { ForgeLink } from '@structures/ForgeLink'
+import { Arg, ArgType, NativeFunction } from '@tryforge/forgescript';
+import type { BaseChannel, VoiceBasedChannel } from 'discord.js';
+import { ForgeLink } from '@structures/ForgeLink';
 import { User } from 'discord.js';
 
 export default new NativeFunction({
@@ -15,36 +15,43 @@ export default new NativeFunction({
     ],
     output: ArgType.String,
     execute: async function(ctx, [guild = ctx.guild, query]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink;
+        
+        let player = lavalink.getPlayer(guild.id) || await lavalink.createPlayer({
+            guildId: guild.id,
+            voiceChannelId: ctx.member.voice.channelId,
+            textChannelId: ctx.channel.id,
+            selfDeaf: true,
+            selfMute: false
+        });
 
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id))
-        if (!player) return this.customError("No player found!")
+        if (!player.connected) await player.connect();
 
-        const result = await kazagumo.search(query, {requester: ctx.member })
-
-        if (!result.tracks.length) return this.customError("No results found!")
-
-        if (result.type === "PLAYLIST")
+        const result = await player.search({ query, source: "ytsearch" }, ctx.member);
+        if (!result || !result.tracks.length) return this.customError("No results found!");
+        
+        if (result.loadType === "playlist") {
             player.queue.add(result.tracks);
-        else player.queue.add(result.tracks[0]);
+        } else {
+            player.queue.add(result.tracks[0]);
+        }
 
-        if (!player.playing && !player.paused) player.play();
+        if (!player.playing) await player.play();
         
         const requester = result.tracks[0].requester as User;
 
         return this.successJSON({
-
-                status: "success",
-        type: result.type,
-        message: result.type === "PLAYLIST"
-            ? `Queued ${result.tracks.length} from ${result.playlistName}`
-            : `Queued ${result.tracks[0].title}`,
-        playlistName: result.type === "PLAYLIST" ? result.playlistName : null,
-        trackCount: result.type === "PLAYLIST" ? result.tracks.length : 1,
-        trackTitle: result.type !== "PLAYLIST" ? result.tracks[0].title : null,
-        trackAuthor: result.type !== "PLAYLIST" ? result.tracks[0].author : null,
-        trackImage: result.tracks[0].thumbnail,
-        requester: requester.id
-    });
+            status: "success",
+            type: result.loadType,
+            message: result.loadType === "playlist"
+                ? `Queued ${result.tracks.length} from ${result.playlist?.title}`
+                : `Queued ${result.tracks[0].info.title}`,
+            playlistName: result.loadType === "playlist" ? result.playlist?.title : null,
+            trackCount: result.loadType === "playlist" ? result.tracks.length : 1,
+            trackTitle: result.loadType !== "playlist" ? result.tracks[0].info.title : null,
+            trackAuthor: result.loadType !== "playlist" ? result.tracks[0].info.author : null,
+            trackImage: result.tracks[0].info.artworkUrl,
+            requester: requester?.id || "Unknown"
+        });
     }
-})
+});

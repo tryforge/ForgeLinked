@@ -13,13 +13,13 @@ export default new NativeFunction({
         Arg.requiredGuild('Guild ID', 'The ID of the guild')
     ],
     output: ArgType.String,
-    execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
+   execute: async function(ctx, [guild = ctx.guild]) {
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id)); 
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id)); 
 if (!player) return this.customError("No player found!");
 
-await player.pause(false)
+await player.resume
 
 return this.success();
     }

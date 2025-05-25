@@ -1,19 +1,20 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs"
 import { generateMetadata, Logger } from "@tryforge/forgescript"
-import { handlerName } from "@managers/KazagumoCommandManager"
+import { handlerName } from "@managers/LavalinkCommandManager"
 import { AsciiTable3 } from "ascii-table3"
 import { join } from "path"
 
-generateMetadata(
-    join(__dirname, "natives"),
-    "natives",
-    handlerName,
-    true,
-    void 0,
-    join(__dirname, "events/kazagumo")
-)
-.then(() => Logger.info("Documentation generation done"))
-.catch((e) => Logger.error(e));
+// generateMetadata(
+//     join(__dirname, "natives"),
+//     "natives",
+//     handlerName,
+//     true,
+//     undefined,
+//     join(__dirname, "events")
+// )
+// .then(() => Logger.info("Documentation generation done"))
+// .catch((e) => Logger.error(e)); 
+
 
 function toCamelCase(text: string): string {
     return text.split(' ').map(

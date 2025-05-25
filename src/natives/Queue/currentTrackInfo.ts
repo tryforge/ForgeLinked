@@ -1,8 +1,6 @@
 import { Arg, ArgType, NativeFunction } from '@tryforge/forgescript'
 import type { BaseChannel, VoiceBasedChannel } from 'discord.js'
 import { ForgeLink } from '@structures/ForgeLink'
-import { KazagumoTrack } from 'kazagumo'
-import { info } from 'console'
 
 export default new NativeFunction({
     name: '$currentTrackInfo',
@@ -15,11 +13,13 @@ export default new NativeFunction({
     ],
     output: ArgType.Json,
     execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id)); 
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id)); 
 if (!player) return this.customError("No player found!");
+      
+    
 
-return this.successJSON(player.queue.current.getRaw());
+       return this.successJSON(player.queue.current.info);
     }
 })

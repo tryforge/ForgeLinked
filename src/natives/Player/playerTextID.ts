@@ -13,10 +13,10 @@ export default new NativeFunction({
     ],
     output: ArgType.TextChannel,
     execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id)); 
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id)); 
 
-        return this.success(player.textId)
+        return this.success(player.textChannelId)
     }
 })

@@ -14,32 +14,40 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.String,
     execute: async function (ctx, [guild = ctx.guild, query]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).kazagumo;
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id));
-        if (!player)
-            return this.customError("No player found!");
-        const result = await kazagumo.search(query, { requester: ctx.member });
-        if (!result.tracks.length)
+        const lavalink = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).lavalink;
+        let player = lavalink.getPlayer(guild.id) || await lavalink.createPlayer({
+            guildId: guild.id,
+            voiceChannelId: ctx.member.voice.channelId,
+            textChannelId: ctx.channel.id,
+            selfDeaf: true,
+            selfMute: false
+        });
+        if (!player.connected)
+            await player.connect();
+        const result = await player.search({ query, source: "ytsearch" }, ctx.member);
+        if (!result || !result.tracks.length)
             return this.customError("No results found!");
-        if (result.type === "PLAYLIST")
+        if (result.loadType === "playlist") {
             player.queue.add(result.tracks);
-        else
+        }
+        else {
             player.queue.add(result.tracks[0]);
-        if (!player.playing && !player.paused)
-            player.play();
+        }
+        if (!player.playing)
+            await player.play();
         const requester = result.tracks[0].requester;
         return this.successJSON({
             status: "success",
-            type: result.type,
-            message: result.type === "PLAYLIST"
-                ? `Queued ${result.tracks.length} from ${result.playlistName}`
-                : `Queued ${result.tracks[0].title}`,
-            playlistName: result.type === "PLAYLIST" ? result.playlistName : null,
-            trackCount: result.type === "PLAYLIST" ? result.tracks.length : 1,
-            trackTitle: result.type !== "PLAYLIST" ? result.tracks[0].title : null,
-            trackAuthor: result.type !== "PLAYLIST" ? result.tracks[0].author : null,
-            trackImage: result.tracks[0].thumbnail,
-            requester: requester.id
+            type: result.loadType,
+            message: result.loadType === "playlist"
+                ? `Queued ${result.tracks.length} from ${result.playlist?.title}`
+                : `Queued ${result.tracks[0].info.title}`,
+            playlistName: result.loadType === "playlist" ? result.playlist?.title : null,
+            trackCount: result.loadType === "playlist" ? result.tracks.length : 1,
+            trackTitle: result.loadType !== "playlist" ? result.tracks[0].info.title : null,
+            trackAuthor: result.loadType !== "playlist" ? result.tracks[0].info.author : null,
+            trackImage: result.tracks[0].info.artworkUrl,
+            requester: requester?.id || "Unknown"
         });
     }
 });

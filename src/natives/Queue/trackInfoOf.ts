@@ -12,19 +12,19 @@ export default new NativeFunction({
         Arg.requiredNumber('Position', 'The track position/index to fetch from.')
     ],
     output: ArgType.Json,
-    execute: async function(ctx, [guild = ctx.guild, position]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
+    execute: async function(ctx, [guild = ctx.guild]) {
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id))
-        if (!player) return this.customError("No player found!")
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id)); 
+        if (!player) return this.customError("No player found!");
 
-            const index = position - 1;
+            const index = player.position - 1;
 
-            if (isNaN(index) || index < 0 || index >= player.queue.length) {
-                return this.customError(`Invalid position! Please Provide a number between 1 and ${player.queue.length}.`);
+            if (isNaN(index) || index < 0 || index >= player.queue.tracks.length) {
+                return this.customError(`Invalid position! Please Provide a number between 1 and ${player.queue.tracks.length}.`);
             }
 
 
-        return this.successJSON(player.queue.at(index).getRaw())
+        return this.successJSON(player.queue.tracks.at(index).info)
     }
 })

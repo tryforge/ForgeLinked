@@ -11,12 +11,12 @@ exports.default = new forgescript_1.NativeFunction({
     args: [
         forgescript_1.Arg.requiredGuild('Guild ID', 'The ID of the guild '),
     ],
-    output: forgescript_1.ArgType.String,
+    output: forgescript_1.ArgType.Number,
     execute: async function (ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).kazagumo;
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id));
+        const lavalink = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).lavalink;
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id));
         if (!player)
             return this.customError("No player found!");
-        return this.successJSON(player.queue.totalSize.toFixed());
+        return this.success(player.queue.tracks.length.toFixed());
     }
 });

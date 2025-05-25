@@ -12,8 +12,8 @@ export default new NativeFunction({
     ],
     output: ArgType.Boolean,
     execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        return this.success(kazagumo.players.has((guild.id ?? ctx.guild.id)))
+        return this.success(lavalink.players.has((guild.id ?? ctx.guild.id)))
     }
 })

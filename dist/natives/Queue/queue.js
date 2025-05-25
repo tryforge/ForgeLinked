@@ -13,31 +13,33 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.Json,
     execute: async function (ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).kazagumo;
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id));
+        const lavalink = ctx.client.getExtension(ForgeLink_1.ForgeLink, true).lavalink;
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id));
         if (!player)
             return this.customError("No player found!");
         const queueTracks = [];
         if (player.queue.current) {
             queueTracks.push({
-                trackSource: player.queue.current.sourceName,
-                trackTitle: player.queue.current.title,
-                trackAuthor: player.queue.current.author,
-                trackUri: player.queue.current.uri,
-                length: player.queue.current.length
+                trackSource: player.queue.current.info.sourceName,
+                trackTitle: player.queue.current.info.title,
+                trackAuthor: player.queue.current.info.author,
+                trackUri: player.queue.current.info.uri,
+                length: player.queue.current.info.duration,
+                requester: player.queue.current.requester
             });
         }
         // Get the rest of the queued tracks
-        const queueSize = Number(player.queue.totalSize.toFixed());
+        const queueSize = Number(player.queue.tracks.length.toFixed());
         for (let i = 0; i < queueSize; i++) {
-            const track = player.queue.at(i);
+            const track = player.queue.tracks.at(i);
             if (track) {
                 queueTracks.push({
-                    trackSource: track.sourceName,
-                    trackTitle: track.title,
-                    trackAuthor: track.author,
-                    trackUri: track.uri,
-                    length: track.length
+                    trackSource: track.info.sourceName,
+                    trackTitle: track.info.title,
+                    trackAuthor: track.info.author,
+                    trackUri: track.info.uri,
+                    length: track.info.duration,
+                    requester: track.requester
                 });
             }
         }

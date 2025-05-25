@@ -15,7 +15,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./classes/structures/ForgeLink"), exports);
-__exportStar(require("./classes/handlers/KazagumoEventHandler"), exports);
-__exportStar(require("./classes/handlers/ShoukakuEventHandler"), exports);
-__exportStar(require("./classes/managers/KazagumoCommandManager"), exports);
-__exportStar(require("./classes/managers/ShoukakuCommandManager"), exports);
+__exportStar(require("./classes/handlers/PlayerEventHandler"), exports);
+__exportStar(require("./classes/managers/LavalinkCommandManager"), exports);

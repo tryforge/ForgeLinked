@@ -8,17 +8,20 @@ export default new NativeFunction({
     brackets: true,
     unwrap: true,
     args: [
+        Arg.requiredGuild('Guild ID', 'The ID of the guild to create the player to.'),
         Arg.requiredString('Query', 'The search query.'),
 
         Arg.optionalNumber('Limit', 'The maximum number of results to return.')
     ],
     output: ArgType.Json,
-    execute: async function(ctx, [query, limit]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo;
+    execute: async function(ctx, [guild = ctx.guild, query, limit]) {
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        if (!kazagumo) return this.customError("Kazagumo is not initialized.");
+        if (!lavalink) return this.customError("Lavalink is not initialized.");
 
-        const result = await kazagumo.search(query, {
+        let player = lavalink.getPlayer(guild.id)
+
+        const result = await player.search(query, {
             requester: ctx.member.id, 
         });
 
@@ -29,17 +32,17 @@ export default new NativeFunction({
 
         return this.successJSON({
             status: "success",
-            type: result.type,
-            message: result.type === "PLAYLIST"
-                ? `Found ${tracks.length} tracks from ${result.playlistName}`
+            type: result.loadType,
+            message: result.loadType === "playlist"
+                ? `Found ${tracks.length} tracks from ${result.playlist.name}`
                 : `Found ${tracks.length} tracks matching the query.`,
-            playlistName: result.type === "PLAYLIST" ? result.playlistName : null,
+            playlistName: result.loadType === "playlist" ? result.playlist.name : null,
             requester: result.tracks[0].requester,
             trackCount: tracks.length,
             tracks: tracks.map(track => ({
                 title: track.title,
                 author: track.author,
-                duration: track.length,
+                duration: track.duration,
                 url: track.uri,
                 thumbnail: track.thumbnail
             }))

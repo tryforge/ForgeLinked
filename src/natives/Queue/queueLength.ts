@@ -11,14 +11,14 @@ export default new NativeFunction({
     args: [
         Arg.requiredGuild('Guild ID', 'The ID of the guild '),
     ],
-    output: ArgType.String,
+    output: ArgType.Number,
     execute: async function(ctx, [guild = ctx.guild]) {
-        const kazagumo = ctx.client.getExtension(ForgeLink, true).kazagumo
+        const lavalink = ctx.client.getExtension(ForgeLink, true).lavalink
 
-        const player = kazagumo.getPlayer((guild.id ?? ctx.guild.id)); 
-if (!player) return this.customError("No player found!");
+        const player = lavalink.getPlayer((guild.id ?? ctx.guild.id)); 
+        if (!player) return this.customError("No player found!");
 
         
-        return this.successJSON(player.queue.totalSize.toFixed());
+        return this.success(player.queue.tracks.length.toFixed());
     }
 })

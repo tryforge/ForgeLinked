@@ -1,6 +1,6 @@
 {
   "name": "@tryforge/forge.linked",
-  "version": "1.1.0",
+  "version": "1.1.3",
   "description": "A Lavalink implementation made for ForgeScript.",
   "main": "dist/index.js",
   "scripts": {
@@ -12,16 +12,16 @@
   "author": "projectconome",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@tryforge/forgescript": "^2.2.0",
-    "@types/node": "^22.13.5",
+    "@tryforge/forgescript": "^2.3.0",
+    "@types/node": "^22.15.30",
     "ascii-table3": "^0.9.0",
-    "discord.js": "^14.18.0",
+    "discord.js": "^14.19.3",
     "shoukaku": "^4.1.1",
-    "tsc-alias": "^1.8.11",
-    "typescript": "^5.7.3"
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "kazagumo": "^3.2.2",
+    "kazagumo": "^3.3.0",
     "kazagumo-filter": "^2.0.0",
     "typedoc": "^0.27.9"
   }

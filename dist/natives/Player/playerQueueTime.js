@@ -4,7 +4,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new forgescript_1.NativeFunction({
     name: '$playerQueueTime',
-    aliases: ["$queueTime"],
+    aliases: ["$queueTime", "$queueEstimatedTime"],
     description: 'Returns the total duration of all tracks in the player queue in milliseconds.',
     version: "1.1.0",
     brackets: false,

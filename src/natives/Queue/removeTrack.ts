@@ -28,8 +28,8 @@ if (!player) return this.customError("No player found!");
 
 const index = position - 1;
 
-if (isNaN(index) || index < 0 || index >= player.queue.length) {
-    return this.customError(`Invalid position! Please Provide a number between 1 and ${player.queue.length}.`);
+if (isNaN(index) || index < 0 || index >= player.queue.totalSize.toFixed()) {
+    return this.customError(`Invalid position! Please Provide a number between 1 and ${player.queue.totalSize.toFixed()}.`);
 }
 
             player.queue.remove(index);

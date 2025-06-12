@@ -79,7 +79,7 @@ class ForgeLink extends forgescript_1.ForgeExtension {
     init(client) {
         this.#watcher = new CustomWatcher(client);
         this.#e = new lavalink_client_1.LavalinkManager({
-            nodes: this.options.nodes,
+            nodes: [...this.options.nodes],
             sendToShard: (guildId, payload) => {
                 const guild = client.guilds.cache.get(guildId);
                 if (guild)

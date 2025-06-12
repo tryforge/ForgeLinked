@@ -1,6 +1,6 @@
 <img src="https://i.imgur.com/Ew9MXaP.jpeg" align="right" height=100 alt="isologo" />
 
-# ForgeLinked.
+# ForgeLinked
 Music made stronger with Lavalink for [ForgeScript](https://npmjs.com/package/@tryforge/forgescript).
 
 <a href="https://github.com/tryforge/ForgeDB/"><img src="https://img.shields.io/github/package-json/v/tryforge/ForgeLink/main?label=@tryforge/forge.link&color=5c16d4" alt="@tryforge/forge.link"></a>
@@ -9,6 +9,10 @@ Music made stronger with Lavalink for [ForgeScript](https://npmjs.com/package/@t
 
 -----
 ## Features
+- Everything From V1!
+- Lyrics Retrieval!
+- More events!
+- More customisation!
 - SOON
 
 ----

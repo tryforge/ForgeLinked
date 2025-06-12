@@ -199,7 +199,7 @@ export class ForgeLink extends ForgeExtension {
         this.#watcher = new CustomWatcher(client);
         
         this.#e = new LavalinkManager({
-            nodes: this.options.nodes,
+            nodes: [...this.options.nodes],
             
             sendToShard: (guildId, payload) => {
                 const guild = client.guilds.cache.get(guildId);

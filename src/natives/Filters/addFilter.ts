@@ -1,6 +1,7 @@
 import { Arg, ArgType, NativeFunction } from '@tryforge/forgescript'
 import type { BaseChannel, VoiceBasedChannel } from 'discord.js'
 import { ForgeLink } from '@structures/ForgeLink'
+import { Filters } from '@utils/constants'
 
 
 export default new NativeFunction({
@@ -11,7 +12,7 @@ export default new NativeFunction({
     unwrap: true,
     args: [
         Arg.requiredGuild('Guild ID', 'The ID of the guild '),
-        Arg.requiredString('Filter', 'The Filter to apply'),
+        Arg.requiredEnum(Filters, 'The Filter to apply'),
     ],
     output: ArgType.Boolean,
     execute: async function(ctx, [guild = ctx.guild, filter]) {

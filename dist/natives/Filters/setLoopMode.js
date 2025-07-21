@@ -6,7 +6,7 @@ const validModes = ['none', 'queue', 'track'];
 exports.default = new forgescript_1.NativeFunction({
     name: '$setLoopMode',
     description: 'Set the loop mode of the music player.',
-    version: "1.0.1",
+    version: "1.2.0",
     brackets: true,
     unwrap: true,
     args: [

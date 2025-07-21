@@ -7,7 +7,7 @@ type LoopMode = typeof validModes[number];
 export default new NativeFunction({
     name: '$setLoopMode',
     description: 'Set the loop mode of the music player.',
-    version: "1.0.1",
+    version: "1.2.0",
     brackets: true,
     unwrap: true,
     args: [

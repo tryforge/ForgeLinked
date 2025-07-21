@@ -5,7 +5,7 @@ import { getOriginalQueue, clearOriginalQueue } from '@utils/QueueMemory'
 export default new NativeFunction({
     name: '$unshuffleQueue',
     description: 'Restores the Kazagumo queue to its original order.',
-    version: '1.0.0',
+    version: '1.2.0',
     brackets: true,
     unwrap: true,
     args: [Arg.requiredGuild('Guild ID', 'The ID of the guild')],

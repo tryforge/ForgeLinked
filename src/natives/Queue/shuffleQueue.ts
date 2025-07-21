@@ -5,7 +5,7 @@ import { setOriginalQueue, hasOriginalQueue } from '@utils/QueueMemory'
 export default new NativeFunction({
     name: '$shuffleQueue',
     description: 'Shuffles the current Kazagumo queue.',
-    version: '1.0.0',
+    version: '1.2.0',
     brackets: true,
     unwrap: true,
     args: [Arg.requiredGuild('Guild ID', 'The ID of the guild')],

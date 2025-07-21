@@ -5,7 +5,7 @@ const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new forgescript_1.NativeFunction({
     name: '$seekTrack',
     description: 'Seeks a track',
-    version: "1.0.1",
+    version: "1.2.0",
     brackets: true,
     unwrap: true,
     args: [

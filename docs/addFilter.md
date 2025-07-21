@@ -2,13 +2,13 @@
 Filters Test Setup
 ## Usage
 ```
-$addFilter[guildID;filter]
+$addFilter[guildID;theFilterToApply]
 ```
 ## Fields
-|   Name   |     Description      |  Type  | Required | Rest |
-|----------|----------------------|--------|----------|------|
-| Guild ID | The ID of the guild  | Guild  | Yes      | No   |
-| Filter   | The Filter to apply  | String | Yes      | No   |
+|        Name         |      Description       | Type  | Required | Rest |
+|---------------------|------------------------|-------|----------|------|
+| Guild ID            | The ID of the guild    | Guild | Yes      | No   |
+| The Filter to apply | The enum values to use | Enum  | Yes      | No   |
 
 ## Output
 > Boolean

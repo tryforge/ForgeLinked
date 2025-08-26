@@ -5,7 +5,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new KazagumoEventHandler_1.KazagumoEventHandler({
     name: 'playerEmpty',
-    description: '...',
+    description: 'This is playerEmpty this is fired when the queue is empty (like berks heart)',
     async listener(player) {
         const commands = this.getExtension(ForgeLink_1.ForgeLink, true).commands.kazagumo.get('playerEmpty');
         if (!commands)

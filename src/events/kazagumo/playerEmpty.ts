@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerEmpty',
-    description: '...',
+    description: 'This is playerEmpty this is fired when the queue is empty (like berks heart)',
     async listener(player) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerEmpty')
         if (!commands) return;

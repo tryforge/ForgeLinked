@@ -5,7 +5,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new KazagumoEventHandler_1.KazagumoEventHandler({
     name: 'playerClosed',
-    description: '...',
+    description: 'This is playerClosed it is fired when the kazagumo player is shut',
     async listener(player) {
         const commands = this.getExtension(ForgeLink_1.ForgeLink, true).commands.kazagumo.get('playerClosed');
         if (!commands)

@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerCreate',
-    description: '...',
+    description: 'This is PlayerCreate it is fired when a lavalink instance has been made or track has been added for the first time',
     async listener(player) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerCreate')
         if (!commands) return;

@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'queueUpdate',
-    description: '...',
+    description: 'This is QueueUpdate this is fired when the players queue has any tracks added or removed or positions changed.',
     async listener(player, track) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('queueUpdate')
         if (!commands) return;

@@ -5,7 +5,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new KazagumoEventHandler_1.KazagumoEventHandler({
     name: 'playerCreate',
-    description: '...',
+    description: 'This is PlayerCreate it is fired when a lavalink instance has been made or track has been added for the first time',
     async listener(player) {
         const commands = this.getExtension(ForgeLink_1.ForgeLink, true).commands.kazagumo.get('playerCreate');
         if (!commands)

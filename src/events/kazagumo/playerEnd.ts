@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerEnd',
-    description: '...',
+    description: 'This is player playerEnd it is fired when the player has reached the end of a track/queue',
     async listener(player) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerEnd')
         if (!commands) return;

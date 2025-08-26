@@ -5,7 +5,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new KazagumoEventHandler_1.KazagumoEventHandler({
     name: 'playerEnd',
-    description: '...',
+    description: 'This is player playerEnd it is fired when the player has reached the end of a track/queue',
     async listener(player) {
         const commands = this.getExtension(ForgeLink_1.ForgeLink, true).commands.kazagumo.get('playerEnd');
         if (!commands)

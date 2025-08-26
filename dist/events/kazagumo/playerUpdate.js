@@ -5,7 +5,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new KazagumoEventHandler_1.KazagumoEventHandler({
     name: 'playerUpdate',
-    description: '...',
+    description: 'This is playerUpdate it is fired when the the state of the plllayer is updated in anyway',
     async listener(player, track) {
         const commands = this.getExtension(ForgeLink_1.ForgeLink, true).commands.kazagumo.get('playerUpdate');
         if (!commands)

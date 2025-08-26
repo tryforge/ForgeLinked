@@ -5,7 +5,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const ForgeLink_1 = require("../../classes/structures/ForgeLink");
 exports.default = new KazagumoEventHandler_1.KazagumoEventHandler({
     name: 'queueUpdate',
-    description: '...',
+    description: 'This is QueueUpdate this is fired when the players queue has any tracks added or removed or positions changed.',
     async listener(player, track) {
         const commands = this.getExtension(ForgeLink_1.ForgeLink, true).commands.kazagumo.get('queueUpdate');
         if (!commands)

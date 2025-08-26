@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerDestroy',
-    description: '...',
+    description: 'This is PlayerDestroy it fires when a lavalink player is destroyed/discarded',
     async listener(player) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerDestroy')
         if (!commands) return;

@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerUpdate',
-    description: '...',
+    description: 'This is playerUpdate it is fired when the the state of the plllayer is updated in anyway',
     async listener(player, track) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerUpdate')
         if (!commands) return;

@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerClosed',
-    description: '...',
+    description: 'This is playerClosed it is fired when the kazagumo player is shut',
     async listener(player) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerClosed')
         if (!commands) return;

@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerStart',
-    description: '...',
+    description: 'This is  PlayerStart this is fired when the player starts a track',
     async listener(player, track) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerStart')
         if (!commands) return;

@@ -4,7 +4,7 @@ import { ForgeLink } from '@structures/ForgeLink'
 
 export default new KazagumoEventHandler({
     name: 'playerResumed',
-    description: '...',
+    description: 'This is PlayerResumed this is fired when the state of the player is no longer paused',
     async listener(player) {
         const commands = this.getExtension(ForgeLink, true).commands.kazagumo.get('playerResumed')
         if (!commands) return;

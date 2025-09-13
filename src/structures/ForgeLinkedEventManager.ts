@@ -1,4 +1,5 @@
 import { BaseEventHandler, ForgeClient } from '@tryforge/forgescript'
+
 import { ForgeLinked, KazagumoEvents } from '../index.js'
 
 /* -------------------------------------------------------------------------- */

@@ -1,5 +1,6 @@
-import { NativeFunction, ArgType } from "@tryforge/forgescript";
-import { ForgeLinked } from "../index.js";
+import { ArgType, NativeFunction } from '@tryforge/forgescript'
+
+import { ForgeLinked } from '../index.js'
 
 export default new NativeFunction({
   name: '$playerSeekTrack',
@@ -20,7 +21,7 @@ export default new NativeFunction({
       type: ArgType.Number,
       rest: false,
       required: true,
-    }
+    },
   ],
   async execute(ctx, [guildId, position]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).kazagumo
@@ -28,5 +29,5 @@ export default new NativeFunction({
     if (!player) return this.customError('No player found for this guild')
     player.seek(position)
     return this.success()
-  }
+  },
 })

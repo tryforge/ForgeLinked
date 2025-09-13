@@ -1,5 +1,6 @@
-import { NativeFunction, ArgType } from "@tryforge/forgescript";
-import { ForgeLinked } from "../index.js";
+import { ArgType, NativeFunction } from '@tryforge/forgescript'
+
+import { ForgeLinked } from '../index.js'
 
 export default new NativeFunction({
   name: '$playerCreate',
@@ -20,14 +21,14 @@ export default new NativeFunction({
       type: ArgType.Channel,
       rest: false,
       required: true,
-    },    
+    },
     {
       name: 'textID',
       description: 'The ID of the text channel for the bot to use',
       type: ArgType.Channel,
       rest: false,
       required: false,
-    }
+    },
   ],
   async execute(ctx, [guildId, voiceId, textId]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).kazagumo
@@ -36,7 +37,7 @@ export default new NativeFunction({
       voiceId: voiceId.id,
       textId: textId?.id ?? undefined,
     })
-    
+
     return this.success(linked.players.has(guildId.id))
-  }
+  },
 })

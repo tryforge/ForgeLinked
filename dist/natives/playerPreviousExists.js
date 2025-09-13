@@ -1,5 +1,5 @@
-import { NativeFunction, ArgType } from "@tryforge/forgescript";
-import { ForgeLinked } from "../index.js";
+import { ArgType, NativeFunction } from '@tryforge/forgescript';
+import { ForgeLinked } from '../index.js';
 export default new NativeFunction({
     name: '$playerPreviousExists',
     description: 'Checks if a player has a valid previous track in the queue',
@@ -11,8 +11,8 @@ export default new NativeFunction({
             description: 'The guild ID to check',
             type: ArgType.Guild,
             required: true,
-            rest: false
-        }
+            rest: false,
+        },
     ],
     async execute(ctx, [guildId]) {
         const kazagumo = ctx.client.getExtension(ForgeLinked, true).kazagumo;
@@ -21,10 +21,8 @@ export default new NativeFunction({
             return this.customError('No player found for this guild');
         const previousTrack = player.queue.previous;
         const currentTrack = player.queue.current;
-        const exists = Boolean(previousTrack &&
-            currentTrack &&
-            previousTrack[0].uri !== currentTrack.uri);
+        const exists = Boolean(previousTrack && currentTrack && previousTrack[0].uri !== currentTrack.uri);
         return this.success(exists);
-    }
+    },
 });
 //# sourceMappingURL=playerPreviousExists.js.map

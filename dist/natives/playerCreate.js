@@ -1,5 +1,5 @@
-import { NativeFunction, ArgType } from "@tryforge/forgescript";
-import { ForgeLinked } from "../index.js";
+import { ArgType, NativeFunction } from '@tryforge/forgescript';
+import { ForgeLinked } from '../index.js';
 export default new NativeFunction({
     name: '$playerCreate',
     description: 'Create a player instance for a guild',
@@ -26,7 +26,7 @@ export default new NativeFunction({
             type: ArgType.Channel,
             rest: false,
             required: false,
-        }
+        },
     ],
     async execute(ctx, [guildId, voiceId, textId]) {
         const linked = ctx.client.getExtension(ForgeLinked, true).kazagumo;
@@ -36,6 +36,6 @@ export default new NativeFunction({
             textId: textId?.id ?? undefined,
         });
         return this.success(linked.players.has(guildId.id));
-    }
+    },
 });
 //# sourceMappingURL=playerCreate.js.map

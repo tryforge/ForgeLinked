@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ForgeClient, ForgeExtension, Logger } from '@tryforge/forgescript'
-import { Kazagumo, KazagumoPlayer, KazagumoEvents } from 'kazagumo'
-import { Connectors, NodeOption } from 'shoukaku'
-import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js'
+import { Kazagumo, KazagumoEvents, KazagumoPlayer } from 'kazagumo'
 import path from 'path'
+import { Connectors, NodeOption } from 'shoukaku'
 import { fileURLToPath } from 'url'
+
+import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js'
 
 /* -------------------------------------------------------------------------- */
 /*                                Type Options                                */
@@ -25,7 +26,7 @@ export interface ForgeLinkSetupOptions {
 export class ForgeLinked extends ForgeExtension {
   name = 'ForgeLinked'
   description = 'ForgeScript integration with Kazagumo (Shoukaku wrapper)'
-  version = '0.0.0'
+  version = '1.0.0'
 
   public client!: ForgeClient
   public kazagumo!: Kazagumo
@@ -46,10 +47,10 @@ export class ForgeLinked extends ForgeExtension {
         send: (guildId, payload) => {
           const guild = this.client.guilds.cache.get(guildId)
           if (guild) guild.shard.send(payload)
-        }
+        },
       },
       new Connectors.DiscordJS(this.client),
-      this.options.nodes
+      this.options.nodes,
     )
 
     // Resolve dist/natives relative to compiled file
@@ -65,7 +66,7 @@ export class ForgeLinked extends ForgeExtension {
         this.kazagumo.on(event, (...args: unknown[]) => {
           this.client.emit(
             `kazagumo${String(event).charAt(0).toUpperCase() + String(event).slice(1)}`,
-            ...args
+            ...args,
           )
         })
       }

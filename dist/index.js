@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ForgeExtension, Logger } from '@tryforge/forgescript';
 import { Kazagumo, KazagumoPlayer } from 'kazagumo';
-import { Connectors } from 'shoukaku';
-import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js';
 import path from 'path';
+import { Connectors } from 'shoukaku';
 import { fileURLToPath } from 'url';
+import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js';
 /* -------------------------------------------------------------------------- */
 /*                              ForgeLinked Class                             */
 /* -------------------------------------------------------------------------- */
@@ -12,7 +12,7 @@ export class ForgeLinked extends ForgeExtension {
     options;
     name = 'ForgeLinked';
     description = 'ForgeScript integration with Kazagumo (Shoukaku wrapper)';
-    version = '0.0.0';
+    version = '1.0.0';
     client;
     kazagumo;
     commands;
@@ -30,7 +30,7 @@ export class ForgeLinked extends ForgeExtension {
                 const guild = this.client.guilds.cache.get(guildId);
                 if (guild)
                     guild.shard.send(payload);
-            }
+            },
         }, new Connectors.DiscordJS(this.client), this.options.nodes);
         // Resolve dist/natives relative to compiled file
         const __filename = fileURLToPath(import.meta.url);

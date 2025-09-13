@@ -1,5 +1,5 @@
-import { NativeFunction, ArgType } from "@tryforge/forgescript";
-import { ForgeLinked } from "../index.js";
+import { ArgType, NativeFunction } from '@tryforge/forgescript';
+import { ForgeLinked } from '../index.js';
 export default new NativeFunction({
     name: '$playerGetVolume',
     description: 'Get the volume of a player',
@@ -12,7 +12,7 @@ export default new NativeFunction({
             rest: false,
             type: ArgType.Guild,
             required: true,
-        }
+        },
     ],
     async execute(ctx, [guildId]) {
         const linked = ctx.client.getExtension(ForgeLinked, true).kazagumo;
@@ -20,6 +20,6 @@ export default new NativeFunction({
         if (!player)
             return this.customError('No player found for this guild');
         return this.success(player.volume);
-    }
+    },
 });
 //# sourceMappingURL=playerGetVolume.js.map

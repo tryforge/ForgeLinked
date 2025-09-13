@@ -1,5 +1,5 @@
 import { ForgeClient, ForgeExtension } from '@tryforge/forgescript';
-import { Kazagumo, KazagumoPlayer, KazagumoEvents } from 'kazagumo';
+import { Kazagumo, KazagumoEvents, KazagumoPlayer } from 'kazagumo';
 import { NodeOption } from 'shoukaku';
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js';
 export interface ForgeLinkSetupOptions {

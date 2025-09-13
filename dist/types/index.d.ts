@@ -1,7 +1,6 @@
 import { ForgeClient, ForgeExtension } from '@tryforge/forgescript';
 import { LavalinkManager, LavalinkNodeOptions, Player, PlayerEvents, SearchPlatform, Track } from 'lavalink-client';
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js';
-import { LavalinkEventNames, NodeEventNames } from './structures/ForgeLinkedEventManager.js';
 export interface ForgeLinkSetupOptions {
     nodes: LavalinkNodeOptions[];
     defaultVolume?: number;
@@ -11,8 +10,8 @@ export interface ForgeLinkSetupOptions {
     requesterTransformer?: (requester: unknown) => unknown;
     autoPlayFunction?: (player: Player, lastPlayedTrack: Track) => Promise<void>;
     events?: {
-        player?: LavalinkEventNames[];
-        node?: NodeEventNames[];
+        player?: any[];
+        node?: any[];
     };
     playerOptions?: {
         applyVolumeAsFilter?: boolean;

@@ -14,7 +14,10 @@ nodes: [
     ],
     playerOptions: {
         defaultSearchPlatform: "ytsearch"
-        }
+        },
+    events: {
+        player: ['trackEnd', 'trackError', 'trackStart', 'trackStuck', 'create', 'destroy'],
+    }
 })
 
 const client = new ForgeClient({

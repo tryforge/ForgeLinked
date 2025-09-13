@@ -1,4 +1,4 @@
-import { EventManager, ForgeClient, ForgeExtension } from '@tryforge/forgescript'
+import { ForgeClient, ForgeExtension } from '@tryforge/forgescript'
 import {
   LavalinkManager,
   LavalinkNodeOptions,
@@ -10,7 +10,6 @@ import {
 import path from 'path'
 
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js'
-import { LavalinkEventNames, NodeEventNames } from './structures/ForgeLinkedEventManager.js'
 
 /* -------------------------------------------------------------------------- */
 /*                                Type Options                                */
@@ -25,8 +24,8 @@ export interface ForgeLinkSetupOptions {
   requesterTransformer?: (requester: unknown) => unknown
   autoPlayFunction?: (player: Player, lastPlayedTrack: Track) => Promise<void>
   events?: {
-    player?: LavalinkEventNames[]
-    node?: NodeEventNames[]
+    player?: any
+    node?: any
   }
   playerOptions?: {
     applyVolumeAsFilter?: boolean

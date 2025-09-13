@@ -2,21 +2,35 @@
   "name": "ForgeLinked-V2",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
+    "commit": "npm run docgen && node dist/commit"
   },
   "keywords": [],
+  "type": "module",
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@tryforge/forgescript": "github:tryforge/ForgeScript#dev",
     "@types/node": "^24.3.1",
     "discord.js": "^14.22.1",
-    "forgescript#latest": "link:@tryforge/forgescript#latest",
+    "prettier": "^3.6.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "lavalink-client": "^2.6.1"
+    "@discordjs/opus": "^0.10.0",
+    "@discordjs/voice": "^0.19.0",
+    "@snazzah/davey": "^0.1.6",
+    "kazagumo": "^3.3.0",
+    "lavalink-client": "^2.6.1",
+    "opusscript": "^0.1.1",
+    "shoukaku": "^4.1.1",
+    "sodium-native": "^5.0.8",
+    "tweetnacl": "^1.0.3"
   }
 }

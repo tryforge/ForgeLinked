@@ -1,44 +1,40 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    /* Output */
+    "outDir": "./dist",                   // compiled JS files
+    "declaration": true,                  // generate .d.ts files
+    "declarationDir": "./dist/types",     // put types in their own folder
+    "sourceMap": true,                    // keep sourcemaps for debugging
 
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
+    /* Language and Environment */
+    "target": "ES2022",                   // modern JS output
     "module": "nodenext",
-    "target": "esnext",
-    "types": [],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,            // allow importing .json
+    "allowSyntheticDefaultImports": true, // smoother interop with CJS
+    "esModuleInterop": true,              // matches your current setup
+    "forceConsistentCasingInFileNames": true,
 
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    /* Type Safety */
+    "strict": true,                       // enables all strict checks
+    "alwaysStrict": true,                 // keep "use strict"
+    "noImplicitAny": true,                // prevent hidden any
+    "strictNullChecks": true,             // null/undefined must be handled
+    "noUnusedLocals": true,               // fail on unused locals
+    "noUnusedParameters": true,           // fail on unused parameters
+    "noImplicitReturns": true,            // must return in all code paths
+    "noFallthroughCasesInSwitch": true,   // catch switch fallthrough bugs
 
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    /* Imports & Paths */
+    "baseUrl": "./src",                   // absolute imports from src/
+    "paths": {
+      "@/*": ["*"]                        // so you can do import x from "@/..."
+    },
 
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-
-    // Recommended Options
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    /* Node.js compatibility */
+    "types": ["node"],                    // include NodeJS types
+    "skipLibCheck": true                  // faster builds, skip .d.ts checking
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

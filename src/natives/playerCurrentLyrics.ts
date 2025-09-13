@@ -1,4 +1,5 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
+
 import { ForgeLinked } from '../index.js'
 
 export default new NativeFunction({
@@ -21,14 +22,13 @@ export default new NativeFunction({
     if (!linked) return this.customError('ForgeLinked is not initialized')
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
-      try {
-        const lyrics = await player.getCurrentLyrics();
-        if (!lyrics?.text) return this.customError('No lyrics found.');
-        return this.success(lyrics.text);
+    try {
+      const lyrics = await player.getCurrentLyrics()
+      if (!lyrics?.text) return this.customError('No lyrics found.')
+      return this.success(lyrics.text)
     } catch (err) {
-        console.error('[Lavalink] Lyrics error:', err);
-        return this.customError('Could not fetch lyrics. Player is safe.');
+      console.error('[Lavalink] Lyrics error:', err)
+      return this.customError('Could not fetch lyrics. Player is safe.')
     }
-    
   },
 })

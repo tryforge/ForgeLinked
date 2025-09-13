@@ -1,4 +1,5 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
+
 import { ForgeLinked } from '../index.js'
 
 export default new NativeFunction({
@@ -29,29 +30,30 @@ export default new NativeFunction({
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
     const result = await player.search(query, {
-        requester: ctx.member?.id, 
-    });
+      requester: ctx.member?.id,
+    })
 
-    if (!result.tracks.length) return this.customError("No results found!");
+    if (!result.tracks.length) return this.customError('No results found!')
 
-    let tracks = result.tracks;
+    let tracks = result.tracks
 
     return this.successJSON({
-        status: "success",
-        type: result.loadType,
-        message: result.loadType === "playlist"
-            ? `Found ${tracks.length} tracks from ${result.playlist?.name}`
-            : `Found ${tracks.length} tracks matching the query.`,
-        playlistName: result.loadType === "playlist" ? result.playlist?.name : null,
-        requester: result.tracks[0].requester,
-        trackCount: tracks.length,
-        tracks: tracks.map(track => ({
-            title: track.info.title,
-            author: track.info.author,
-            duration: track.info.duration,
-            url: track.info.uri,
-            thumbnail: track.info.artworkUrl
-        }))
-    });
+      status: 'success',
+      type: result.loadType,
+      message:
+        result.loadType === 'playlist'
+          ? `Found ${tracks.length} tracks from ${result.playlist?.name}`
+          : `Found ${tracks.length} tracks matching the query.`,
+      playlistName: result.loadType === 'playlist' ? result.playlist?.name : null,
+      requester: result.tracks[0].requester,
+      trackCount: tracks.length,
+      tracks: tracks.map((track) => ({
+        title: track.info.title,
+        author: track.info.author,
+        duration: track.info.duration,
+        url: track.info.uri,
+        thumbnail: track.info.artworkUrl,
+      })),
+    })
   },
 })

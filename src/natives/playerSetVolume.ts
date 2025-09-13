@@ -1,4 +1,5 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
+
 import { ForgeLinked } from '../index.js'
 
 export default new NativeFunction({

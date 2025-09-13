@@ -34,13 +34,13 @@ exports.default = new forgescript_1.NativeFunction({
                     trackAuthor: track.info.author,
                     trackUri: track.info.uri,
                     length: track.info.duration,
-                    requester: track.requester
+                    requester: track.requester,
                 });
             }
         }
         return this.successJSON({
             guildId: guildId.id,
-            history: historyTracks
+            history: historyTracks,
         });
     },
 });

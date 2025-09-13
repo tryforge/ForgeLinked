@@ -1,5 +1,6 @@
-import { NativeFunction, ArgType } from "@tryforge/forgescript";
-import { ForgeLinked } from "..";
+import { ArgType, NativeFunction } from '@tryforge/forgescript'
+
+import { ForgeLinked } from '..'
 
 export default new NativeFunction({
   name: '$playerQueueHistory',
@@ -21,25 +22,25 @@ export default new NativeFunction({
     if (!linked) return this.customError('ForgeLinked is not initialized')
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
-    
-    const historyTracks = [];
-    const previousTracks = player.queue.previous || [];
+
+    const historyTracks = []
+    const previousTracks = player.queue.previous || []
     if (previousTracks.length) {
-        for (const track of previousTracks) {
-            historyTracks.push({
-                trackSource: track.info.sourceName,
-                trackTitle: track.info.title,
-                trackAuthor: track.info.author,
-                trackUri: track.info.uri,
-                length: track.info.duration,
-                requester: track.requester
-            });
-        }
+      for (const track of previousTracks) {
+        historyTracks.push({
+          trackSource: track.info.sourceName,
+          trackTitle: track.info.title,
+          trackAuthor: track.info.author,
+          trackUri: track.info.uri,
+          length: track.info.duration,
+          requester: track.requester,
+        })
+      }
     }
 
     return this.successJSON({
-        guildId: guildId.id,
-        history: historyTracks
-    });
+      guildId: guildId.id,
+      history: historyTracks,
+    })
   },
 })

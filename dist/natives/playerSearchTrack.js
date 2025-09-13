@@ -35,24 +35,24 @@ exports.default = new forgescript_1.NativeFunction({
             requester: ctx.member?.id,
         });
         if (!result.tracks.length)
-            return this.customError("No results found!");
+            return this.customError('No results found!');
         let tracks = result.tracks;
         return this.successJSON({
-            status: "success",
+            status: 'success',
             type: result.loadType,
-            message: result.loadType === "playlist"
+            message: result.loadType === 'playlist'
                 ? `Found ${tracks.length} tracks from ${result.playlist?.name}`
                 : `Found ${tracks.length} tracks matching the query.`,
-            playlistName: result.loadType === "playlist" ? result.playlist?.name : null,
+            playlistName: result.loadType === 'playlist' ? result.playlist?.name : null,
             requester: result.tracks[0].requester,
             trackCount: tracks.length,
-            tracks: tracks.map(track => ({
+            tracks: tracks.map((track) => ({
                 title: track.info.title,
                 author: track.info.author,
                 duration: track.info.duration,
                 url: track.info.uri,
-                thumbnail: track.info.artworkUrl
-            }))
+                thumbnail: track.info.artworkUrl,
+            })),
         });
     },
 });

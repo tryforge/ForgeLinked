@@ -1,5 +1,6 @@
-import { NativeFunction, ArgType } from "@tryforge/forgescript";
-import { ForgeLinked } from "..";
+import { ArgType, NativeFunction } from '@tryforge/forgescript'
+
+import { ForgeLinked } from '..'
 
 export default new NativeFunction({
   name: '$playerIsPaused',

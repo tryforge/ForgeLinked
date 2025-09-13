@@ -8,11 +8,11 @@
 
     /* Language and Environment */
     "target": "ES2022",                   // modern JS output
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "CommonJS",                 // ✅ use CJS, gives __dirname/__filename
+    "moduleResolution": "Node",           // classic Node CJS resolution
     "resolveJsonModule": true,            // allow importing .json
-    "allowSyntheticDefaultImports": true, // smoother interop with CJS
-    "esModuleInterop": true,              // matches your current setup
+    "allowSyntheticDefaultImports": true, // smoother interop with CJS/ESM
+    "esModuleInterop": true,              // allow default imports from CJS
     "forceConsistentCasingInFileNames": true,
 
     /* Type Safety */

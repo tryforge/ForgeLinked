@@ -2,20 +2,20 @@ import { ArgType, NativeFunction } from '@tryforge/forgescript';
 declare const _default: NativeFunction<[{
     name: string;
     description: string;
-    rest: false;
     type: ArgType.Guild;
     required: true;
+    rest: false;
 }, {
     name: string;
     description: string;
     type: ArgType.Channel;
-    rest: false;
     required: true;
+    rest: false;
 }, {
     name: string;
     description: string;
     type: ArgType.Channel;
-    rest: false;
     required: false;
+    rest: false;
 }], true>;
 export default _default;

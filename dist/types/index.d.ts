@@ -1,13 +1,39 @@
 import { ForgeClient, ForgeExtension } from '@tryforge/forgescript';
-import { Kazagumo, KazagumoEvents, KazagumoPlayer } from 'kazagumo';
-import { NodeOption } from 'shoukaku';
+import { LavalinkManager, LavalinkNodeOptions, Player, PlayerEvents, SearchPlatform, Track } from 'lavalink-client';
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js';
+import { LavalinkEventNames, NodeEventNames } from './structures/ForgeLinkedEventManager.js';
 export interface ForgeLinkSetupOptions {
-    nodes: NodeOption[];
+    nodes: LavalinkNodeOptions[];
     defaultVolume?: number;
+    autoSkip?: boolean;
+    autoSkipOnResolveError?: boolean;
+    emitNewSongsOnly?: boolean;
+    requesterTransformer?: (requester: unknown) => unknown;
+    autoPlayFunction?: (player: Player, lastPlayedTrack: Track) => Promise<void>;
     events?: {
-        player?: (keyof KazagumoEvents)[];
+        player?: LavalinkEventNames[];
+        node?: NodeEventNames[];
     };
+    playerOptions?: {
+        applyVolumeAsFilter?: boolean;
+        clientBasedPositionUpdateInterval?: number;
+        defaultSearchPlatform?: SearchPlatform;
+        volumeDecrementer?: number;
+        useUnresolvedData?: boolean;
+        onDisconnect?: {
+            autoReconnect?: boolean;
+            destroyPlayer?: boolean;
+        };
+        onEmptyQueue?: {
+            destroyAfterMs?: number;
+        };
+    };
+    queueOptions?: {
+        maxPreviousTracks?: number;
+    };
+    linksAllowed?: boolean;
+    linksBlacklist?: string[];
+    linksWhitelist?: string[];
 }
 export declare class ForgeLinked extends ForgeExtension {
     private readonly options;
@@ -15,10 +41,9 @@ export declare class ForgeLinked extends ForgeExtension {
     description: string;
     version: string;
     client: ForgeClient;
-    kazagumo: Kazagumo;
+    lavalink: LavalinkManager;
     commands: ForgeLinkedCommandManager;
     constructor(options: ForgeLinkSetupOptions);
     init(client: ForgeClient): Promise<void>;
 }
-export { KazagumoPlayer };
-export type { KazagumoEvents };
+export type { PlayerEvents, SearchPlatform, LavalinkNodeOptions };

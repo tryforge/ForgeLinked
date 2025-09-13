@@ -1,6 +1,8 @@
-import { ArgType, NativeFunction } from '@tryforge/forgescript';
-import { ForgeLinked } from '../index.js';
-export default new NativeFunction({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const forgescript_1 = require("@tryforge/forgescript");
+const index_js_1 = require("../index.js");
+exports.default = new forgescript_1.NativeFunction({
     name: '$playerAddTrack',
     description: 'Add a track to a player',
     brackets: true,
@@ -9,50 +11,50 @@ export default new NativeFunction({
         {
             name: 'guildId',
             description: 'The guild id to add the track to',
-            rest: false,
-            type: ArgType.Guild,
+            type: forgescript_1.ArgType.Guild,
             required: true,
+            rest: false,
         },
         {
             name: 'query',
             description: 'The query to search for',
-            type: ArgType.String,
-            rest: false,
+            type: forgescript_1.ArgType.String,
             required: true,
+            rest: false,
         },
     ],
+    output: forgescript_1.ArgType.Json,
     async execute(ctx, [guildId, query]) {
-        const start = Date.now();
-        const linked = ctx.client.getExtension(ForgeLinked, true).kazagumo;
-        const player = linked.players.get(guildId.id);
+        const lavalink = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
+        let player = lavalink.getPlayer(guildId.id);
         if (!player)
-            return this.customError('No player found for this guild');
-        const track = await player.search(query, { requester: ctx.member });
-        if (!track)
-            return this.successJSON({});
-        if (track.type === 'PLAYLIST')
-            player.queue.add(track.tracks);
-        else
-            player.queue.add(track.tracks[0]);
-        if (!player.playing && !player.paused)
-            player.play();
-        const requester = track.tracks[0].requester;
+            return this.customError('Player not found');
+        if (!player.connected)
+            await player.connect();
+        const result = await player.search({ query, source: 'ytsearch' }, ctx.member);
+        if (!result || !result.tracks.length)
+            return this.customError('No results found!');
+        if (result.loadType === 'playlist') {
+            player.queue.add(result.tracks);
+        }
+        else {
+            player.queue.add(result.tracks[0]);
+        }
+        if (!player.playing)
+            await player.play();
+        const requester = result.tracks[0].requester;
         return this.successJSON({
-            ping: Date.now() - start,
             status: 'success',
-            type: track.type,
-            message: track.type === 'PLAYLIST'
-                ? `Queued ${track.tracks.length} from ${track.playlistName}`
-                : `Queued ${track.tracks[0].title}`,
-            playlistName: track.type === 'PLAYLIST' ? track.playlistName : null,
-            trackCount: track.type === 'PLAYLIST' ? track.tracks.length : 1,
-            trackTitle: track.type !== 'PLAYLIST' ? track.tracks[0].title : null,
-            trackAuthor: track.type !== 'PLAYLIST' ? track.tracks[0].author : null,
-            trackImage: track.tracks[0].thumbnail,
-            requester: requester.id,
-            queuePosition: player.queue.length,
-            queueTotalTracks: player.queue.length,
-            queueIsPlayingNow: !player.playing && !player.paused,
+            type: result.loadType,
+            message: result.loadType === 'playlist'
+                ? `Queued ${result.tracks.length} from ${result.playlist?.title}`
+                : `Queued ${result.tracks[0].info.title}`,
+            playlistName: result.loadType === 'playlist' ? result.playlist?.title : null,
+            trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
+            trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
+            trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,
+            trackImage: result.tracks[0].info.artworkUrl,
+            requester: requester?.id || 'Unknown',
         });
     },
 });

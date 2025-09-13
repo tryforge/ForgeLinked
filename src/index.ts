@@ -1,35 +1,66 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ForgeClient, ForgeExtension, Logger } from '@tryforge/forgescript'
-import { Kazagumo, KazagumoEvents, KazagumoPlayer } from 'kazagumo'
+import { EventManager, ForgeClient, ForgeExtension } from '@tryforge/forgescript'
+import {
+  LavalinkManager,
+  LavalinkNodeOptions,
+  Player,
+  PlayerEvents,
+  SearchPlatform,
+  Track,
+} from 'lavalink-client'
 import path from 'path'
-import { Connectors, NodeOption } from 'shoukaku'
-import { fileURLToPath } from 'url'
 
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js'
+import { LavalinkEventNames, NodeEventNames } from './structures/ForgeLinkedEventManager.js'
 
 /* -------------------------------------------------------------------------- */
 /*                                Type Options                                */
 /* -------------------------------------------------------------------------- */
 
 export interface ForgeLinkSetupOptions {
-  nodes: NodeOption[]
+  nodes: LavalinkNodeOptions[]
   defaultVolume?: number
+  autoSkip?: boolean
+  autoSkipOnResolveError?: boolean
+  emitNewSongsOnly?: boolean
+  requesterTransformer?: (requester: unknown) => unknown
+  autoPlayFunction?: (player: Player, lastPlayedTrack: Track) => Promise<void>
   events?: {
-    player?: (keyof KazagumoEvents)[]
+    player?: LavalinkEventNames[]
+    node?: NodeEventNames[]
   }
+  playerOptions?: {
+    applyVolumeAsFilter?: boolean
+    clientBasedPositionUpdateInterval?: number
+    defaultSearchPlatform?: SearchPlatform
+    volumeDecrementer?: number
+    useUnresolvedData?: boolean
+    onDisconnect?: {
+      autoReconnect?: boolean
+      destroyPlayer?: boolean
+    }
+    onEmptyQueue?: {
+      destroyAfterMs?: number
+    }
+  }
+  queueOptions?: {
+    maxPreviousTracks?: number
+  }
+  linksAllowed?: boolean
+  linksBlacklist?: string[]
+  linksWhitelist?: string[]
 }
 
 /* -------------------------------------------------------------------------- */
-/*                              ForgeLinked Class                             */
+/*                               ForgeLink Class                              */
 /* -------------------------------------------------------------------------- */
 
 export class ForgeLinked extends ForgeExtension {
-  name = 'ForgeLinked'
-  description = 'ForgeScript integration with Kazagumo (Shoukaku wrapper)'
+  name = 'ForgeLink'
+  description = 'ForgeScript integration with lavalink-client'
   version = '1.0.0'
 
   public client!: ForgeClient
-  public kazagumo!: Kazagumo
+  public lavalink!: LavalinkManager
   public commands!: ForgeLinkedCommandManager
 
   constructor(private readonly options: ForgeLinkSetupOptions) {
@@ -40,39 +71,70 @@ export class ForgeLinked extends ForgeExtension {
     const start = Date.now()
     this.client = client
 
-    // Initialize Kazagumo
-    this.kazagumo = new Kazagumo(
-      {
-        defaultSearchEngine: '',
-        send: (guildId, payload) => {
-          const guild = this.client.guilds.cache.get(guildId)
-          if (guild) guild.shard.send(payload)
+    this.lavalink = new LavalinkManager({
+      nodes: this.options.nodes,
+      sendToShard: (guildId, payload) => {
+        const guild = this.client.guilds.cache.get(guildId)
+        if (guild) guild.shard.send(payload)
+        return Promise.resolve()
+      },
+      autoSkip: this.options.autoSkip ?? true,
+      autoSkipOnResolveError: this.options.autoSkipOnResolveError ?? true,
+      emitNewSongsOnly: this.options.emitNewSongsOnly ?? true,
+      playerOptions: {
+        applyVolumeAsFilter: this.options.playerOptions?.applyVolumeAsFilter ?? false,
+        clientBasedPositionUpdateInterval:
+          this.options.playerOptions?.clientBasedPositionUpdateInterval ?? 50,
+        defaultSearchPlatform:
+          this.options.playerOptions?.defaultSearchPlatform ?? ('ytsearch' as SearchPlatform),
+        volumeDecrementer: this.options.playerOptions?.volumeDecrementer ?? 0.75,
+        useUnresolvedData: this.options.playerOptions?.useUnresolvedData ?? true,
+        requesterTransformer: this.options.requesterTransformer,
+        onDisconnect: {
+          autoReconnect: this.options.playerOptions?.onDisconnect?.autoReconnect ?? true,
+          destroyPlayer: this.options.playerOptions?.onDisconnect?.destroyPlayer ?? false,
+        },
+        onEmptyQueue: {
+          destroyAfterMs: this.options.playerOptions?.onEmptyQueue?.destroyAfterMs ?? 30000,
+          autoPlayFunction: this.options.autoPlayFunction,
         },
       },
-      new Connectors.DiscordJS(this.client),
-      this.options.nodes,
-    )
-
-    // Resolve dist/natives relative to compiled file
-    const __filename = fileURLToPath(import.meta.url)
-    const __dirname = path.dirname(__filename)
+      queueOptions: {
+        maxPreviousTracks: this.options.queueOptions?.maxPreviousTracks ?? 10,
+      },
+      linksAllowed: this.options.linksAllowed ?? true,
+      linksBlacklist: this.options.linksBlacklist ?? [],
+      linksWhitelist: this.options.linksWhitelist ?? [],
+    })
 
     this.commands = new ForgeLinkedCommandManager(this.client)
-    this.load(path.join(__dirname, 'natives'))
 
-    // Bind Kazagumo events to ForgeScript events
+    client.on('raw', (packet) => {
+      this.lavalink.sendRawData(packet).catch((err) => {
+        console.error('Failed to send raw data to Lavalink:', err)
+      })
+    })
+
+    this.load(path.join(__dirname, './natives'))
+
     if (this.options.events?.player?.length) {
       for (const event of this.options.events.player) {
-        this.kazagumo.on(event, (...args: unknown[]) => {
+        this.lavalink.on(event as any, (...args: unknown[]) => {
           this.client.emit(
-            `kazagumo${String(event).charAt(0).toUpperCase() + String(event).slice(1)}`,
+            `lavalink${String(event).charAt(0).toUpperCase() + String(event).slice(1)}`,
             ...args,
           )
         })
       }
     }
+    client.on('ready', () => {
+      this.lavalink.init({
+        id: client.user.id,
+        username: client.user.username,
+      })
+    })
 
-    Logger.debug(`ForgeLinked: Initialized in ${Date.now() - start}ms`)
+    console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`)
   }
 }
 
@@ -80,5 +142,4 @@ export class ForgeLinked extends ForgeExtension {
 /*                                  Exports                                   */
 /* -------------------------------------------------------------------------- */
 
-export { KazagumoPlayer }
-export type { KazagumoEvents }
+export type { PlayerEvents, SearchPlatform, LavalinkNodeOptions }

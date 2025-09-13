@@ -35,6 +35,6 @@
     "types": ["node"],                    // include NodeJS types
     "skipLibCheck": true                  // faster builds, skip .d.ts checking
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/commit.cts"],
   "exclude": ["node_modules", "dist"]
 }

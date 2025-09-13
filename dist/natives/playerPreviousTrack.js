@@ -2,6 +2,7 @@ import { NativeFunction, ArgType } from "@tryforge/forgescript";
 import { ForgeLinked } from "../index.js";
 export default new NativeFunction({
     name: "$playerPreviousTrack",
+    version: "0.0.0",
     description: "Play the previous track of a player",
     brackets: true,
     unwrap: true,

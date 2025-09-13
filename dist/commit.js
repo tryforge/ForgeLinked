@@ -5,7 +5,8 @@ import prompt from './prompt.js';
 const path = './metadata';
 if (!existsSync(path))
     mkdirSync(path);
-const version = require('../package.json').version;
+const pkg = JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf-8'));
+const version = pkg.version;
 async function main() {
     let skip = false;
     const msg = (await prompt('Please write the commit message: '))

@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\"",
-    "commit": "npm run docgen && node dist/commit"
+    "commit": "npm run docgen && node dist/commit",
+    "docgen": "node dist/docgen"
   },
   "keywords": [],
   "type": "module",

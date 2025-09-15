@@ -8,6 +8,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const lavalink_client_1 = require("lavalink-client");
 const path_1 = __importDefault(require("path"));
 const ForgeLinkedCommandManager_js_1 = require("./structures/ForgeLinkedCommandManager.js");
+const tiny_typed_emitter_1 = require("tiny-typed-emitter");
 /* -------------------------------------------------------------------------- */
 /*                               ForgeLink Class                              */
 /* -------------------------------------------------------------------------- */
@@ -19,6 +20,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
     client;
     lavalink;
     commands;
+    emitter = new tiny_typed_emitter_1.TypedEmitter();
     constructor(options) {
         super();
         this.options = options;
@@ -61,24 +63,33 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
             linksWhitelist: this.options.linksWhitelist ?? [],
         });
         this.commands = new ForgeLinkedCommandManager_js_1.ForgeLinkedCommandManager(this.client);
+        forgescript_1.EventManager.load('ForgeLinked', __dirname + `/events`);
+        if (this.options.events?.length) {
+            this.client.events.load('ForgeLinked', this.options.events);
+        }
         client.on('raw', (packet) => {
             this.lavalink.sendRawData(packet).catch((err) => {
                 console.error('Failed to send raw data to Lavalink:', err);
             });
         });
         this.load(path_1.default.join(__dirname, './natives'));
-        if (this.options.events?.player?.length) {
-            for (const event of this.options.events.player) {
-                this.lavalink.on(event, (...args) => {
-                    this.client.emit(`lavalink${String(event).charAt(0).toUpperCase() + String(event).slice(1)}`, ...args);
-                });
-            }
-        }
         client.on('ready', () => {
             this.lavalink.init({
                 id: client.user.id,
                 username: client.user.username,
             });
+        });
+        this.lavalink.on('playerCreate', (player) => {
+            this.emitter.emit('linkedPlayerCreate', player);
+        });
+        this.lavalink.on('playerDestroy', (player, reason) => {
+            this.emitter.emit('linkedPlayerDestroy', player, reason);
+        });
+        this.lavalink.on('playerDisconnect', (player, voiceChannelID) => {
+            this.emitter.emit('linkedPlayerDisconnect', player, voiceChannelID);
+        });
+        this.lavalink.on('playerMove', (player, oldVoiceChannelID, newVoiceChannelID) => {
+            this.emitter.emit('linkedPlayerMove', player, oldVoiceChannelID, newVoiceChannelID);
         });
         console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`);
     }

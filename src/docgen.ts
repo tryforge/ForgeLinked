@@ -1,3 +1,3 @@
 import { generateMetadata } from '@tryforge/forgescript'
 
-generateMetadata(`${process.cwd()}/dist/natives`, 'native')
+generateMetadata(`${__dirname}/natives`, 'native', 'ForgeLinkedEvents', false, undefined, `${__dirname}/events`)

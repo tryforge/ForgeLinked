@@ -15,9 +15,7 @@ nodes: [
     playerOptions: {
         defaultSearchPlatform: "ytsearch"
         },
-    events: {
-        player: ['trackEnd', 'trackError', 'trackStart', 'trackStuck', 'create', 'destroy'],
-    }
+    events: ['linkedPlayerCreate', 'linkedPlayerDestroy']
 })
 
 const client = new ForgeClient({
@@ -42,3 +40,12 @@ client.commands.add({
 
 
 client.login("")
+
+lavalink.commands.add({
+    type: 'linkedPlayerCreate',
+    code: '$log[$linkedEventPlayerCreate]'
+})
+lavalink.commands.add({
+    type: 'linkedPlayerDestroy',
+    code: '$log[$linkedEventPlayerCreate]'
+})

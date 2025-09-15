@@ -1,6 +1,7 @@
 import { ForgeClient, ForgeExtension } from '@tryforge/forgescript';
 import { LavalinkManager, LavalinkNodeOptions, Player, PlayerEvents, SearchPlatform, Track } from 'lavalink-client';
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js';
+import { IForgeLinkedEvents } from './structures/ForgeLinkedEventManager';
 export interface ForgeLinkSetupOptions {
     nodes: LavalinkNodeOptions[];
     defaultVolume?: number;
@@ -9,10 +10,7 @@ export interface ForgeLinkSetupOptions {
     emitNewSongsOnly?: boolean;
     requesterTransformer?: (requester: unknown) => unknown;
     autoPlayFunction?: (player: Player, lastPlayedTrack: Track) => Promise<void>;
-    events?: {
-        player?: any[];
-        node?: any[];
-    };
+    events?: Array<keyof IForgeLinkedEvents>;
     playerOptions?: {
         applyVolumeAsFilter?: boolean;
         clientBasedPositionUpdateInterval?: number;
@@ -34,6 +32,9 @@ export interface ForgeLinkSetupOptions {
     linksBlacklist?: string[];
     linksWhitelist?: string[];
 }
+export type TransformEvents<T> = {
+    [P in keyof T]: T[P] extends unknown[] ? (...args: T[P]) => void : never;
+};
 export declare class ForgeLinked extends ForgeExtension {
     private readonly options;
     name: string;
@@ -42,6 +43,7 @@ export declare class ForgeLinked extends ForgeExtension {
     client: ForgeClient;
     lavalink: LavalinkManager;
     commands: ForgeLinkedCommandManager;
+    private emitter;
     constructor(options: ForgeLinkSetupOptions);
     init(client: ForgeClient): Promise<void>;
 }

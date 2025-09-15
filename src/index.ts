@@ -1,4 +1,4 @@
-import { ForgeClient, ForgeExtension } from '@tryforge/forgescript'
+import { EventManager, ForgeClient, ForgeExtension } from '@tryforge/forgescript'
 import {
   LavalinkManager,
   LavalinkNodeOptions,
@@ -10,6 +10,8 @@ import {
 import path from 'path'
 
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js'
+import { TypedEmitter } from 'tiny-typed-emitter'
+import { IForgeLinkedEvents } from './structures/ForgeLinkedEventManager'
 
 /* -------------------------------------------------------------------------- */
 /*                                Type Options                                */
@@ -23,10 +25,7 @@ export interface ForgeLinkSetupOptions {
   emitNewSongsOnly?: boolean
   requesterTransformer?: (requester: unknown) => unknown
   autoPlayFunction?: (player: Player, lastPlayedTrack: Track) => Promise<void>
-  events?: {
-    player?: any
-    node?: any
-  }
+  events?: Array<keyof IForgeLinkedEvents>
   playerOptions?: {
     applyVolumeAsFilter?: boolean
     clientBasedPositionUpdateInterval?: number
@@ -49,6 +48,10 @@ export interface ForgeLinkSetupOptions {
   linksWhitelist?: string[]
 }
 
+export type TransformEvents<T> = {
+  [P in keyof T]: T[P] extends unknown[] ? (...args: T[P]) => void : never;
+};
+
 /* -------------------------------------------------------------------------- */
 /*                               ForgeLink Class                              */
 /* -------------------------------------------------------------------------- */
@@ -61,6 +64,8 @@ export class ForgeLinked extends ForgeExtension {
   public client!: ForgeClient
   public lavalink!: LavalinkManager
   public commands!: ForgeLinkedCommandManager
+
+  private emitter = new TypedEmitter<TransformEvents<IForgeLinkedEvents>>()
 
   constructor(private readonly options: ForgeLinkSetupOptions) {
     super()
@@ -107,6 +112,10 @@ export class ForgeLinked extends ForgeExtension {
     })
 
     this.commands = new ForgeLinkedCommandManager(this.client)
+    EventManager.load('ForgeLinked', __dirname + `/events`)
+    if (this.options.events?.length) {
+      this.client.events.load('ForgeLinked', this.options.events)
+    }
 
     client.on('raw', (packet) => {
       this.lavalink.sendRawData(packet).catch((err) => {
@@ -115,17 +124,6 @@ export class ForgeLinked extends ForgeExtension {
     })
 
     this.load(path.join(__dirname, './natives'))
-
-    if (this.options.events?.player?.length) {
-      for (const event of this.options.events.player) {
-        this.lavalink.on(event as any, (...args: unknown[]) => {
-          this.client.emit(
-            `lavalink${String(event).charAt(0).toUpperCase() + String(event).slice(1)}`,
-            ...args,
-          )
-        })
-      }
-    }
     client.on('ready', () => {
       this.lavalink.init({
         id: client.user.id,
@@ -133,8 +131,24 @@ export class ForgeLinked extends ForgeExtension {
       })
     })
 
+    this.lavalink.on('playerCreate', (player) => {
+      this.emitter.emit('linkedPlayerCreate', player)
+    })
+    this.lavalink.on('playerDestroy', (player, reason) => {
+      this.emitter.emit('linkedPlayerDestroy', player, reason)
+    })
+    this.lavalink.on('playerDisconnect', (player, voiceChannelID) => {
+      this.emitter.emit('linkedPlayerDisconnect', player, voiceChannelID)
+    })
+    this.lavalink.on('playerMove', (player, oldVoiceChannelID, newVoiceChannelID) => {
+      this.emitter.emit('linkedPlayerMove', player, oldVoiceChannelID, newVoiceChannelID)
+    })
     console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`)
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                Event Utils                                 */
+  /* -------------------------------------------------------------------------- */
 }
 
 /* -------------------------------------------------------------------------- */

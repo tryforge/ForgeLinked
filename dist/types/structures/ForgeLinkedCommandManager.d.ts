@@ -1,6 +1,6 @@
 import { BaseCommandManager } from '@tryforge/forgescript';
-import type { LavalinkManagerEvents } from 'lavalink-client';
+import type { IForgeLinkedEvents } from '../structures/ForgeLinkedEventManager';
 export declare const handlerName = "ForgeLinked";
-export declare class ForgeLinkedCommandManager extends BaseCommandManager<keyof LavalinkManagerEvents> {
+export declare class ForgeLinkedCommandManager extends BaseCommandManager<keyof IForgeLinkedEvents> {
     handlerName: string;
 }

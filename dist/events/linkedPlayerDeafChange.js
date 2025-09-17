@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const forgescript_1 = require("@tryforge/forgescript");
+const __1 = require("..");
+const ForgeLinkedEventManager_1 = require("../structures/ForgeLinkedEventManager");
+exports.default = new ForgeLinkedEventManager_1.ForgeLinkedEventHandler({
+    name: 'linkedPlayerDeafChange',
+    description: 'This event is called when a player deaf state changes',
+    listener(player, selfDeaf, serverDeaf) {
+        const commands = this.getExtension(__1.ForgeLinked, true).commands.get('linkedPlayerDeafChange');
+        const guild = this.guilds.cache.get(player.guildId);
+        for (const command of commands) {
+            forgescript_1.Interpreter.run({
+                obj: guild,
+                client: this,
+                command,
+                data: command.compiled.code,
+                extras: { player, self: selfDeaf, server: serverDeaf },
+            });
+        }
+    },
+});
+//# sourceMappingURL=linkedPlayerDeafChange.js.map

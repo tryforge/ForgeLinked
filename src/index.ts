@@ -1,4 +1,4 @@
-import { EventManager, ForgeClient, ForgeExtension } from '@tryforge/forgescript'
+import { EventManager, ForgeClient, ForgeExtension, Logger } from '@tryforge/forgescript'
 import {
   LavalinkManager,
   LavalinkNodeOptions,
@@ -131,18 +131,20 @@ export class ForgeLinked extends ForgeExtension {
       })
     })
 
-    this.lavalink.on('playerCreate', (player) => {
-      this.emitter.emit('linkedPlayerCreate', player)
-    })
-    this.lavalink.on('playerDestroy', (player, reason) => {
-      this.emitter.emit('linkedPlayerDestroy', player, reason)
-    })
-    this.lavalink.on('playerDisconnect', (player, voiceChannelID) => {
-      this.emitter.emit('linkedPlayerDisconnect', player, voiceChannelID)
-    })
-    this.lavalink.on('playerMove', (player, oldVoiceChannelID, newVoiceChannelID) => {
-      this.emitter.emit('linkedPlayerMove', player, oldVoiceChannelID, newVoiceChannelID)
-    })
+    if (this.options.events?.length) {
+      for (const linkedEvent of this.options.events) {
+        Logger.info(`Linked ${linkedEvent} event registered`);
+        const lavalinkEvent =
+          linkedEvent.startsWith("linked")
+            ? linkedEvent.charAt(6).toLowerCase() + linkedEvent.slice(7)
+            : linkedEvent;
+    
+        this.lavalink.on(lavalinkEvent as any, (...args: unknown[]) => {
+          this.emitter.emit(linkedEvent as keyof IForgeLinkedEvents, ...args as any);
+          Logger.info(`Linked ${linkedEvent} event emitted`);
+        });
+      }
+    }      
     console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`)
   }
 

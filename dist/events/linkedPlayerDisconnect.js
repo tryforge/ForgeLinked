@@ -8,9 +8,10 @@ exports.default = new ForgeLinkedEventManager_1.ForgeLinkedEventHandler({
     description: 'This event is called when a player disconnects',
     listener(player, voiceChannelID) {
         const commands = this.getExtension(__1.ForgeLinked, true).commands.get('linkedPlayerDisconnect');
+        const guild = this.guilds.cache.get(player.guildId);
         for (const command of commands) {
             forgescript_1.Interpreter.run({
-                obj: {},
+                obj: { guild },
                 client: this,
                 command,
                 data: command.compiled.code,

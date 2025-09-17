@@ -4,17 +4,17 @@ const { ForgeLinked } = require('../dist')
 
 const lavalink = new ForgeLinked({
 nodes: [
-        {
-            id: "Public Lavalink v4",
-            authorization: "https://dsc.gg/ajidevserver",
-            host: "lava-v4.ajieblogs.eu.org",
-            port: 443,
-            secure: true
-          }
-    ],
+    {
+        id: "My Lavalink v4",
+        host: "localhost",          // or your VPS IP/domain
+        port: 2333,
+        authorization: "yourverystrongpassword",  // ✅ must be 'authorization'
+        secure: false
+    }    
+],
     playerOptions: {
-        defaultSearchPlatform: "ytsearch"
-        },
+        defaultSearchPlatform: "scsearch"
+    },
     events: ['linkedPlayerCreate', 'linkedPlayerDestroy']
 })
 
@@ -36,16 +36,4 @@ client.commands.add({
     name: 'e',
     type: 'messageCreate',
     code: '$onlyForUsers[Not for you!;$botOwnerID] $eval[$message]'
-})
-
-
-client.login("")
-
-lavalink.commands.add({
-    type: 'linkedPlayerCreate',
-    code: '$log[$linkedEventPlayerCreate]'
-})
-lavalink.commands.add({
-    type: 'linkedPlayerDestroy',
-    code: '$log[$linkedEventPlayerCreate]'
 })

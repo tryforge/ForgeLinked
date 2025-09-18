@@ -24,6 +24,34 @@ export default new NativeFunction({
       rest: false,
     },
     {
+      name: 'volume',
+      description: 'The volume to set the player to',
+      type: ArgType.Number,
+      required: false,
+      rest: false,
+    },
+    {
+      name: 'selfDeaf',
+      description: 'Whether to deafen the bot',
+      type: ArgType.Boolean,
+      required: false,
+      rest: false,
+    },
+    {
+      name: 'selfMute',
+      description: 'Whether to mute the bot',
+      type: ArgType.Boolean,
+      required: false,
+      rest: false,
+    },
+    {
+      name: 'node',
+      description: 'The node to use for the player',
+      type: ArgType.String,
+      required: false,
+      rest: false,
+    },
+    {
       name: 'guildId',
       description: 'The guild id to create the player for',
       type: ArgType.Guild,
@@ -32,7 +60,7 @@ export default new NativeFunction({
     },
   ],
   output: ArgType.Boolean,
-  async execute(ctx, [voiceId, textId, guildId]) {
+  async execute(ctx, [voiceId, textId, volume, selfDeaf, selfMute, node, guildId]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
     if (!guildId) guildId = ctx.guild
@@ -45,9 +73,10 @@ export default new NativeFunction({
       guildId: guildId.id,
       voiceChannelId: voiceId.id,
       textChannelId: textId?.id,
-      volume: 100,
-      selfDeaf: true,
-      selfMute: false,
+      volume: volume || 100,
+      selfDeaf: selfDeaf || true,
+      selfMute: selfMute || false,
+      node: node || undefined,
     })
     return this.success(linked.players.has(guildId.id))
   },

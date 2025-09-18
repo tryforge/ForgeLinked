@@ -6,7 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 export default new ForgeLinkedEventHandler({
   name: 'linkedDebug',
   description: 'Triggered for various debug logs and errors',
-  version: '1.0.0',
+  version: '2.0.0',
   listener(eventKey, eventData) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedDebug')
 

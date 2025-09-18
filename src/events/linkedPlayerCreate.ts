@@ -6,7 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerCreate',
-  version: '1.0.0',
+  version: '2.0.0',
   description: 'This event is called when a player is created',
   listener(player) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerCreate')

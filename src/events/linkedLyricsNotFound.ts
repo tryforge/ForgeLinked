@@ -6,7 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedLyricsNotFound',
-  version: '1.0.0',
+  version: '2.0.0',
   description: 'Triggered when lyrics for a track are not found',
   listener(player, track, payload) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedLyricsNotFound')

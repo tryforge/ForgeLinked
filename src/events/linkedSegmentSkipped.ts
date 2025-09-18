@@ -6,7 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedSegmentSkipped',
-  version: '1.0.0',
+  version: '2.0.0',
   description: 'Triggered when a specific segment is skipped',
   listener(player, track, payload) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedSegmentSkipped')

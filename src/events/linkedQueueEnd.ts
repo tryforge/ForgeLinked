@@ -6,7 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedQueueEnd',
-  version: '1.0.0',
+  version: '2.0.0',
   description: 'Triggered when the queue ends',
   listener(player, track, payload) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedQueueEnd')

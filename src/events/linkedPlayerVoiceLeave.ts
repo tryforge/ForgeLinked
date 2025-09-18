@@ -6,7 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerVoiceLeave',
-  version: '1.0.0',
+  version: '2.0.0',
   description:
     'This event is called when a user leaves (or switches away from) the player voice channel while there is a player',
   listener(player, userId) {

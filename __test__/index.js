@@ -1,11 +1,12 @@
 const { ForgeClient } = require('@tryforge/forgescript')
 const { ForgeLinked } = require('../dist')
-
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 const lavalink = new ForgeLinked({
 nodes: [
     {
-        id: "My Lavalink v4",
+        id: "Public Lavalink Server",
         host: "lavalink.zack911.xyz",          // or your VPS IP/domain
         port: 443,
         authorization: "ZackIsSoCool",  // ✅ must be 'authorization'
@@ -37,3 +38,6 @@ client.commands.add({
     type: 'messageCreate',
     code: '$onlyForUsers[Not for you!;$botOwnerID] $eval[$message]'
 })
+
+
+client.login(process.env.BOT_TOKEN)

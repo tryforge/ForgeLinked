@@ -1,4 +1,5 @@
 import { BaseCommandManager } from '@tryforge/forgescript'
+
 import type { IForgeLinkedEvents } from '../structures/ForgeLinkedEventManager'
 
 export const handlerName = 'ForgeLinked'

@@ -1,13 +1,14 @@
-import { Interpreter } from '@tryforge/forgescript';
-import { ForgeLinked } from '..';
-import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager';
-import { Guild } from 'discord.js';
+import { Interpreter } from '@tryforge/forgescript'
+import { Guild } from 'discord.js'
+
+import { ForgeLinked } from '..'
+import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerDestroy',
   description: 'This event is called when a player is destroyed',
   listener(player, reason) {
-    const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerDestroy');
+    const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerDestroy')
 
     const guild = this.guilds.cache.get(player.guildId) as Guild
 
@@ -17,8 +18,8 @@ export default new ForgeLinkedEventHandler({
         client: this,
         command,
         data: command.compiled.code,
-        extras: {player, reason: reason},
-      });
+        extras: { player, reason: reason },
+      })
     }
   },
 })

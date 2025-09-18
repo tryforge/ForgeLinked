@@ -1,13 +1,14 @@
-import { Interpreter } from '@tryforge/forgescript';
-import { ForgeLinked } from '..';
-import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager';
-import { Guild } from 'discord.js';
+import { Interpreter } from '@tryforge/forgescript'
+import { Guild } from 'discord.js'
+
+import { ForgeLinked } from '..'
+import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerDeafChange',
   description: 'This event is called when a player deaf state changes',
   listener(player, selfDeaf, serverDeaf) {
-    const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerDeafChange');
+    const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerDeafChange')
 
     const guild = this.guilds.cache.get(player.guildId) as Guild
 
@@ -17,8 +18,8 @@ export default new ForgeLinkedEventHandler({
         client: this,
         command,
         data: command.compiled.code,
-        extras: {player, self: selfDeaf, server: serverDeaf},
-      });
+        extras: { player, self: selfDeaf, server: serverDeaf },
+      })
     }
   },
-});
+})

@@ -81,13 +81,11 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
         });
         if (this.options.events?.length) {
             for (const linkedEvent of this.options.events) {
-                forgescript_1.Logger.info(`Linked ${linkedEvent} event registered`);
                 const lavalinkEvent = linkedEvent.startsWith("linked")
                     ? linkedEvent.charAt(6).toLowerCase() + linkedEvent.slice(7)
                     : linkedEvent;
                 this.lavalink.on(lavalinkEvent, (...args) => {
                     this.emitter.emit(linkedEvent, ...args);
-                    forgescript_1.Logger.info(`Linked ${linkedEvent} event emitted`);
                 });
             }
         }

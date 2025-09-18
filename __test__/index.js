@@ -6,14 +6,14 @@ const lavalink = new ForgeLinked({
 nodes: [
     {
         id: "My Lavalink v4",
-        host: "localhost",          // or your VPS IP/domain
-        port: 2333,
-        authorization: "yourverystrongpassword",  // ✅ must be 'authorization'
-        secure: false
+        host: "lavalink.zack911.xyz",          // or your VPS IP/domain
+        port: 443,
+        authorization: "ZackIsSoCool",  // ✅ must be 'authorization'
+        secure: true
     }    
 ],
     playerOptions: {
-        defaultSearchPlatform: "scsearch"
+        defaultSearchPlatform: "youtube"
     },
     events: ['linkedPlayerCreate', 'linkedPlayerDestroy']
 })

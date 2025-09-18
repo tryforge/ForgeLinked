@@ -1,13 +1,14 @@
-import { Interpreter } from '@tryforge/forgescript';
-import { ForgeLinked } from '..';
-import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager';
-import { Guild } from 'discord.js';
+import { Interpreter } from '@tryforge/forgescript'
+import { Guild } from 'discord.js'
+
+import { ForgeLinked } from '..'
+import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerSuppressChange',
   description: 'This event is called when a player suppress state changes',
   listener(player, suppress) {
-    const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerSuppressChange');
+    const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerSuppressChange')
 
     const guild = this.guilds.cache.get(player.guildId) as Guild
 
@@ -17,8 +18,8 @@ export default new ForgeLinkedEventHandler({
         client: this,
         command,
         data: command.compiled.code,
-        extras: {player, suppress},
-      });
+        extras: { player, suppress },
+      })
     }
   },
-});
+})

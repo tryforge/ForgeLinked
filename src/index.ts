@@ -1,4 +1,4 @@
-import { EventManager, ForgeClient, ForgeExtension, Logger } from '@tryforge/forgescript'
+import { EventManager, ForgeClient, ForgeExtension } from '@tryforge/forgescript'
 import {
   LavalinkManager,
   LavalinkNodeOptions,
@@ -8,9 +8,9 @@ import {
   Track,
 } from 'lavalink-client'
 import path from 'path'
+import { TypedEmitter } from 'tiny-typed-emitter'
 
 import { ForgeLinkedCommandManager } from './structures/ForgeLinkedCommandManager.js'
-import { TypedEmitter } from 'tiny-typed-emitter'
 import { IForgeLinkedEvents } from './structures/ForgeLinkedEventManager'
 
 /* -------------------------------------------------------------------------- */
@@ -49,8 +49,8 @@ export interface ForgeLinkSetupOptions {
 }
 
 export type TransformEvents<T> = {
-  [P in keyof T]: T[P] extends unknown[] ? (...args: T[P]) => void : never;
-};
+  [P in keyof T]: T[P] extends unknown[] ? (...args: T[P]) => void : never
+}
 
 /* -------------------------------------------------------------------------- */
 /*                               ForgeLink Class                              */
@@ -133,18 +133,15 @@ export class ForgeLinked extends ForgeExtension {
 
     if (this.options.events?.length) {
       for (const linkedEvent of this.options.events) {
-        Logger.info(`Linked ${linkedEvent} event registered`);
-        const lavalinkEvent =
-          linkedEvent.startsWith("linked")
-            ? linkedEvent.charAt(6).toLowerCase() + linkedEvent.slice(7)
-            : linkedEvent;
-    
+        const lavalinkEvent = linkedEvent.startsWith('linked')
+          ? linkedEvent.charAt(6).toLowerCase() + linkedEvent.slice(7)
+          : linkedEvent
+
         this.lavalink.on(lavalinkEvent as any, (...args: unknown[]) => {
-          this.emitter.emit(linkedEvent as keyof IForgeLinkedEvents, ...args as any);
-          Logger.info(`Linked ${linkedEvent} event emitted`);
-        });
+          this.emitter.emit(linkedEvent as keyof IForgeLinkedEvents, ...(args as any))
+        })
       }
-    }      
+    }
     console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`)
   }
 

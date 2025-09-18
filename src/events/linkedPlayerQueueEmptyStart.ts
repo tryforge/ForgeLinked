@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerQueueEmptyStart',
+  version: '1.0.0',
   description: 'This event is called when the queue empty handler starts (the timeout)',
   listener(player, timeoutMs) {
     const commands = this.getExtension(ForgeLinked, true).commands.get(

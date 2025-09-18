@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedTrackStuck',
+  version: '1.0.0',
   description: 'Triggered when a track gets stuck (e.g., playback halts)',
   listener(player, track, payload) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedTrackStuck')

@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedTrackError',
+  version: '1.0.0',
   description: 'Triggered when an error occurs during track playback',
   listener(player, track, payload) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedTrackError')

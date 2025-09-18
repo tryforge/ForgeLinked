@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerCreate',
   description: 'Create a player for a guild',
+  version: '1.0.0',
   brackets: true,
   unwrap: true,
   args: [

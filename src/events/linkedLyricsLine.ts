@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedLyricsLine',
+  version: '1.0.0',
   description: 'Triggered when a new lyrics line is received',
   listener(player, track, payload) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedLyricsLine')

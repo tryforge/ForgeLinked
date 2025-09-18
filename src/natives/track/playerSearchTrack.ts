@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerSearchTrack',
   description: 'Search for a track',
+  version: '1.0.0',
   brackets: true,
   unwrap: true,
   args: [

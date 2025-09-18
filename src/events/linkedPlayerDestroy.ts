@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerDestroy',
+  version: '1.0.0',
   description: 'This event is called when a player is destroyed',
   listener(player, reason) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerDestroy')

@@ -5,6 +5,7 @@ import { ForgeLinked } from '../..'
 export default new NativeFunction({
   name: '$playerQueueHistory',
   description: 'Get the queue history of a player',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

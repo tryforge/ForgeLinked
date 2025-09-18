@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerExists',
   description: 'Check if a player exists',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

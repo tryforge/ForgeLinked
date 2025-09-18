@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerTrackInfoOf',
   description: 'Get the info of a track',
+  version: '1.0.0',
   brackets: true,
   unwrap: true,
   args: [

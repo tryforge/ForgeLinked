@@ -5,6 +5,7 @@ import { ForgeLinked } from '../..'
 export default new NativeFunction({
   name: '$playerIsPaused',
   description: 'Check if a player is paused',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

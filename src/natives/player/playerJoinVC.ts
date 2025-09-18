@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerJoinVC',
   description: 'Join a voice channel',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerPause',
   description: 'Pause a player',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

@@ -5,6 +5,7 @@ import { ForgeLinked } from '../..'
 export default new NativeFunction({
   name: '$playerQueueLength',
   description: 'Get the queue length of a player',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

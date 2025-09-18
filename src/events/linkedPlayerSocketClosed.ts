@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerSocketClosed',
+  version: '1.0.0',
   description: 'This event is called when a player socket is closed',
   listener(player, payload) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerSocketClosed')

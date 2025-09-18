@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerSetVolume',
   description: 'Set the volume of a player',
+  version: '1.0.0',
   brackets: true,
   unwrap: true,
   args: [

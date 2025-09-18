@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerPreviousExists',
   description: 'Check if a previous track exists',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerMuteChange',
+  version: '1.0.0',
   description: 'This event is called when a player mute state changes',
   listener(player, selfMute, serverMute) {
     const commands = this.getExtension(ForgeLinked, true).commands.get('linkedPlayerMuteChange')

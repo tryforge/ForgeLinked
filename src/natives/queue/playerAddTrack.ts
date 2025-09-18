@@ -6,6 +6,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerAddTrack',
   description: 'Add a track to a player',
+  version: '1.0.0',
   brackets: true,
   unwrap: true,
   args: [

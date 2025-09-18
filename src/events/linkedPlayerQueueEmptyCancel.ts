@@ -6,6 +6,7 @@ import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 
 export default new ForgeLinkedEventHandler({
   name: 'linkedPlayerQueueEmptyCancel',
+  version: '1.0.0',
   description:
     'This event is called when the queue empty handler is cancelled (e.g., a new track was added)',
   listener(player) {

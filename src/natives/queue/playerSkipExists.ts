@@ -5,6 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerSkipExists',
   description: 'Check whether the next track exists in the player queue',
+  version: '1.0.0',
   brackets: false,
   unwrap: true,
   args: [

@@ -72,7 +72,7 @@ export default new NativeFunction({
     linked.createPlayer({
       guildId: guildId.id,
       voiceChannelId: voiceId.id,
-      textChannelId: textId?.id,
+      textChannelId: textId?.id || ctx.channel?.id,
       volume: volume || 100,
       selfDeaf: selfDeaf || true,
       selfMute: selfMute || false,

@@ -24,6 +24,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "dotenv": "^17.2.2",
     "lavalink-client": "^2.6.1",
     "opusscript": "^0.1.1"
   }

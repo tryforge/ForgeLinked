@@ -17,7 +17,7 @@ exports.default = new forgescript_1.NativeFunction({
             rest: false,
         },
     ],
-    output: forgescript_1.ArgType.Number,
+    output: forgescript_1.ArgType.Json,
     execute(ctx, [guildId]) {
         const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
         if (!linked)
@@ -29,7 +29,7 @@ exports.default = new forgescript_1.NativeFunction({
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
-        return this.success(player.ping ?? 0);
+        return this.successJSON(player.ping);
     },
 });
 //# sourceMappingURL=playerPing.js.map

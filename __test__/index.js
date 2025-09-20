@@ -1,6 +1,6 @@
 const { ForgeClient } = require('@tryforge/forgescript')
 const { ForgeLinked } = require('../dist')
-import * as dotenv from 'dotenv'
+const dotenv = require('dotenv')
 dotenv.config()
 
 const lavalink = new ForgeLinked({
@@ -16,7 +16,7 @@ nodes: [
     playerOptions: {
         defaultSearchPlatform: "youtube"
     },
-    events: ['linkedPlayerCreate', 'linkedPlayerDestroy']
+    events: ['linkedPlayerCreate', 'linkedPlayerDestroy', 'error']
 })
 
 const client = new ForgeClient({

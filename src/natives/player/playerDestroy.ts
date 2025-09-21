@@ -10,22 +10,22 @@ export default new NativeFunction({
   unwrap: true,
   args: [
     {
-      name: 'reason',
-      description: 'The reason to destroy the player for',
-      type: ArgType.String,
-      required: false,
-      rest: false,
-    },
-    {
       name: 'guildId',
       description: 'The guild id to destroy the player for',
       type: ArgType.Guild,
       required: false,
       rest: false,
     },
+    {
+      name: 'reason',
+      description: 'The reason to destroy the player for',
+      type: ArgType.String,
+      required: false,
+      rest: false,
+    },
   ],
   output: ArgType.Boolean,
-  execute(ctx, [reason, guildId]) {
+  execute(ctx, [guildId, reason]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
     if (!guildId) guildId = ctx.guild

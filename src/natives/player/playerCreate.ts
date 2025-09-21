@@ -10,6 +10,13 @@ export default new NativeFunction({
   unwrap: true,
   args: [
     {
+      name: 'guildId',
+      description: 'The guild id to create the player for',
+      type: ArgType.Guild,
+      required: true,
+      rest: false,
+    },
+    {
       name: 'voiceID',
       description: 'The ID of the voice channel for the bot to use',
       type: ArgType.Channel,
@@ -51,23 +58,11 @@ export default new NativeFunction({
       required: false,
       rest: false,
     },
-    {
-      name: 'guildId',
-      description: 'The guild id to create the player for',
-      type: ArgType.Guild,
-      required: false,
-      rest: false,
-    },
   ],
   output: ArgType.Boolean,
-  async execute(ctx, [voiceId, textId, volume, selfDeaf, selfMute, node, guildId]) {
+  async execute(ctx, [guildId, voiceId, textId, volume, selfDeaf, selfMute, node]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
-    if (!guildId) guildId = ctx.guild
-    if (!guildId)
-      return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat',
-      )
 
     linked.createPlayer({
       guildId: guildId.id,

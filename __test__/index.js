@@ -27,7 +27,8 @@ const client = new ForgeClient({
         'GuildVoiceStates'
     ],
     events: [
-        'messageCreate'
+        'messageCreate',
+        'interactionCreate'
     ],
     extensions: [lavalink],
     prefixes: ['.']
@@ -38,6 +39,7 @@ client.commands.add({
     type: 'messageCreate',
     code: '$onlyForUsers[Not for you!;$botOwnerID] $eval[$message]'
 })
-
+client.applicationCommands.load('./__test__/slash');
+client.commands.load('./__test__/commands')
 
 client.login(process.env.BOT_TOKEN)

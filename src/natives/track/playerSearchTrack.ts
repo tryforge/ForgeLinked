@@ -10,29 +10,24 @@ export default new NativeFunction({
   unwrap: true,
   args: [
     {
+      name: 'guildId',
+      description: 'The guild id to search for the track in',
+      type: ArgType.Guild,
+      required: true,
+      rest: false,
+    },
+    {
       name: 'query',
       description: 'The query to search for',
       type: ArgType.String,
       required: true,
       rest: false,
     },
-    {
-      name: 'guildId',
-      description: 'The guild id to search for the track in',
-      type: ArgType.Guild,
-      required: false,
-      rest: false,
-    },
   ],
   output: ArgType.Json,
-  async execute(ctx, [query, guildId]) {
+  async execute(ctx, [guildId, query]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
-    if (!guildId) guildId = ctx.guild
-    if (!guildId)
-      return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat',
-      )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
     const result = await player.search(query, {

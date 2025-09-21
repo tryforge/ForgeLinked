@@ -10,6 +10,13 @@ export default new NativeFunction({
   unwrap: true,
   args: [
     {
+      name: 'guildId',
+      description: 'The guild id to swap tracks for',
+      type: ArgType.Guild,
+      required: true,
+      rest: false,
+    },
+    {
       name: 'indexA',
       description: 'First track index',
       type: ArgType.Number,
@@ -23,23 +30,11 @@ export default new NativeFunction({
       required: true,
       rest: false,
     },
-    {
-      name: 'guildId',
-      description: 'The guild id to swap tracks for',
-      type: ArgType.Guild,
-      required: false,
-      rest: false,
-    },
   ],
   output: ArgType.Boolean,
-  execute(ctx, [indexA, indexB, guildId]) {
+  execute(ctx, [guildId, indexA, indexB]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
-    if (!guildId) guildId = ctx.guild
-    if (!guildId)
-      return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat',
-      )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
 

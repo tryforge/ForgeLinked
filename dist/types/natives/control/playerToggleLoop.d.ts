@@ -7,15 +7,15 @@ declare enum LoopMode {
 declare const _default: NativeFunction<[{
     name: string;
     description: string;
-    type: ArgType.Enum;
-    enum: typeof LoopMode;
+    type: ArgType.Guild;
     required: true;
     rest: false;
 }, {
     name: string;
     description: string;
-    type: ArgType.Guild;
-    required: false;
+    type: ArgType.Enum;
+    enum: typeof LoopMode;
+    required: true;
     rest: false;
 }], true>;
 export default _default;

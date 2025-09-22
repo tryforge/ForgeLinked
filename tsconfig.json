@@ -1,39 +1,27 @@
 {
   "compilerOptions": {
-    /* Output */
-    "outDir": "./dist",                   // compiled JS files
-    "declaration": true,                  // generate .d.ts files
-    "declarationDir": "./dist/types",     // put types in their own folder
-    "sourceMap": true,                    // keep sourcemaps for debugging
-
-    /* Language and Environment */
-    "target": "ES2022",                   // modern JS output
-    "module": "CommonJS",                 // ✅ use CJS, gives __dirname/__filename
-    "moduleResolution": "Node",           // classic Node CJS resolution
-    "resolveJsonModule": true,            // allow importing .json
-    "allowSyntheticDefaultImports": true, // smoother interop with CJS/ESM
-    "esModuleInterop": true,              // allow default imports from CJS
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "sourceMap": true,
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-
-    /* Type Safety */
-    "strict": true,                       // enables all strict checks
-    "alwaysStrict": true,                 // keep "use strict"
-    "noImplicitAny": true,                // prevent hidden any
-    "strictNullChecks": true,             // null/undefined must be handled
-    "noUnusedLocals": true,               // fail on unused locals
-    "noUnusedParameters": true,           // fail on unused parameters
-    "noImplicitReturns": true,            // must return in all code paths
-    "noFallthroughCasesInSwitch": true,   // catch switch fallthrough bugs
-
-    /* Imports & Paths */
-    "baseUrl": "./src",                   // absolute imports from src/
-    "paths": {
-      "@/*": ["*"]                        // so you can do import x from "@/..."
-    },
-
-    /* Node.js compatibility */
-    "types": ["node"],                    // include NodeJS types
-    "skipLibCheck": true                  // faster builds, skip .d.ts checking
+    "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./src",
+    "types": ["node"],
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/commit.cts"],
   "exclude": ["node_modules", "dist"]

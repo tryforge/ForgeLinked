@@ -41,7 +41,7 @@ export class ForgeLinkedEventHandler<T extends keyof IForgeLinkedEvents> extends
   register(client: ForgeClient): void {
     client
       .getExtension(ForgeLinked, true)
-      ['emitter']// @ts-ignore
+      ['emitter'] // @ts-ignore
       .on(this.name, this.listener.bind(client))
   }
 }

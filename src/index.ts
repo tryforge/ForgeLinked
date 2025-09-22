@@ -59,7 +59,7 @@ export type TransformEvents<T> = {
 export class ForgeLinked extends ForgeExtension {
   name = 'ForgeLink'
   description = 'ForgeScript integration with lavalink-client'
-  version = '2.0.0'
+  version = '2.0.1'
 
   public client!: ForgeClient
   public lavalink!: LavalinkManager
@@ -74,7 +74,6 @@ export class ForgeLinked extends ForgeExtension {
   async init(client: ForgeClient) {
     const start = Date.now()
     this.client = client
-
     this.lavalink = new LavalinkManager({
       nodes: this.options.nodes,
       sendToShard: (guildId, payload) => {

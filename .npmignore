@@ -1,0 +1,7 @@
+.gitignore
+__test__
+.vscode
+metadata
+tsconfig.json
+pnpm-workspace.yaml
+.env

@@ -1,6 +1,6 @@
 {
   "name": "@tryforge/forge.linked",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A package to extend forgescript to implement music capabilities via lavalink",
   "main": "dist/index.js",
   "scripts": {
@@ -10,10 +10,15 @@
     "commit": "npm run docgen && node dist/commit",
     "docgen": "node dist/docgen"
   },
-  "keywords": [],
+  "keywords": [
+    "lavalink",
+    "forgescript",
+    "discord bots",
+    "music"
+  ],
   "type": "commonjs",
-  "author": "",
-  "license": "GPL-3.0-only",
+  "author": "Zack-911",
+  "license": "GPL-3.0",
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",

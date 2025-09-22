@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      dotenv:
-        specifier: ^17.2.2
-        version: 17.2.2
       lavalink-client:
         specifier: ^2.6.1
         version: 2.6.1
@@ -30,6 +27,9 @@ importers:
       discord.js:
         specifier: ^14.22.1
         version: 14.22.1
+      dotenv:
+        specifier: ^17.2.2
+        version: 17.2.2
       prettier:
         specifier: ^3.6.2
         version: 3.6.2

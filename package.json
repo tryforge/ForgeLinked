@@ -1,7 +1,7 @@
 {
-  "name": "ForgeLinked",
+  "name": "@tryforge/forge.linked",
   "version": "2.0.0",
-  "description": "",
+  "description": "A package to extend forgescript to implement music capabilities via lavalink",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

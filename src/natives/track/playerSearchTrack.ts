@@ -36,21 +36,29 @@ export default new NativeFunction({
       type: ArgType.Member,
       required: false,
       rest: false,
+    },
+    {
+      name: 'limit',
+      description: 'The limit of the tracks to return',
+      type: ArgType.Number,
+      required: false,
+      rest: false,
     }
   ],
   output: ArgType.Json,
-  async execute(ctx, [guildId, query, source, requester]) {
+  async execute(ctx, [guildId, query, source, requester, limit]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
     const result = await player.search(`${source}:${query}`, {
-      requester: requester?.id,
+      requester: requester?.id || ctx.member?.id,
     })
 
     if (!result.tracks.length) return this.customError('No results found!')
 
     let tracks = result.tracks
+    if (limit) tracks = tracks.slice(0, limit)
 
     return this.successJSON({
       status: 'success',

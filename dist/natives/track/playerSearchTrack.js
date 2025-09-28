@@ -23,17 +23,31 @@ exports.default = new forgescript_1.NativeFunction({
             required: true,
             rest: false,
         },
+        {
+            name: 'source',
+            description: 'The source to use. Such as yt for youtube ytm for youtube music etc. Depends on the lavalink server config',
+            type: forgescript_1.ArgType.String,
+            required: false,
+            rest: false,
+        },
+        {
+            name: 'requester',
+            description: 'The requester of the track',
+            type: forgescript_1.ArgType.Member,
+            required: false,
+            rest: false,
+        }
     ],
     output: forgescript_1.ArgType.Json,
-    async execute(ctx, [guildId, query]) {
+    async execute(ctx, [guildId, query, source, requester]) {
         const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
         if (!linked)
             return this.customError('ForgeLinked is not initialized');
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
-        const result = await player.search(query, {
-            requester: ctx.member?.id,
+        const result = await player.search(`${source}:${query}`, {
+            requester: requester?.id,
         });
         if (!result.tracks.length)
             return this.customError('No results found!');

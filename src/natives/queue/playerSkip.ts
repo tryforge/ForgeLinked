@@ -35,6 +35,7 @@ export default new NativeFunction({
       )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
+    if ((position || 0) > player.queue.tracks.length) return this.customError('Cannot skip more than the queue size.')
     player.skip(position || undefined)
     return this.success(true)
   },

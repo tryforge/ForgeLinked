@@ -4,8 +4,8 @@ const forgescript_1 = require("@tryforge/forgescript");
 const index_js_1 = require("../../index.js");
 exports.default = new forgescript_1.NativeFunction({
     name: '$playerPreviousExists',
-    description: 'Check if a previous track exists',
-    version: '1.0.0',
+    description: 'Check if a previous track exists (ignores current until it ends)',
+    version: '1.2.0',
     brackets: false,
     unwrap: true,
     args: [
@@ -25,11 +25,15 @@ exports.default = new forgescript_1.NativeFunction({
         if (!guildId)
             guildId = ctx.guild;
         if (!guildId)
-            return this.customError('Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat');
+            return this.customError('Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat');
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
-        return this.success(player.queue.previous !== null);
+        const prev = player.queue.previous[0];
+        console.log(prev?.info.title, player.queue.current);
+        if (prev?.info.identifier == player.queue.current?.info.identifier)
+            return this.success(false);
+        return this.success(true);
     },
 });
 //# sourceMappingURL=playerPreviousExists.js.map

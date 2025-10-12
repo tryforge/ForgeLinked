@@ -1,4 +1,4 @@
-import { EventManager, ForgeClient, ForgeExtension } from '@tryforge/forgescript'
+import { EventManager, ForgeClient, ForgeExtension, Logger } from '@tryforge/forgescript'
 import {
   LavalinkManager,
   LavalinkNodeOptions,
@@ -72,6 +72,14 @@ export class ForgeLinked extends ForgeExtension {
   }
 
   async init(client: ForgeClient) {
+    process.on('uncaughtException', (err) => {
+      Logger.error('Uncaught Exception:', err)
+    })
+
+    process.on('unhandledRejection', (reason, promise) => {
+      Logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
+    })
+
     const start = Date.now()
     this.client = client
     this.lavalink = new LavalinkManager({

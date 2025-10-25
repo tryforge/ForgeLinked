@@ -27,6 +27,7 @@ export default new NativeFunction({
         'Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat',
       )
     const player = linked.getPlayer(guildId.id)
-    return this.success(player !== null)
+    if (!player) return this.success(false)
+    return this.success(true)
   },
 })

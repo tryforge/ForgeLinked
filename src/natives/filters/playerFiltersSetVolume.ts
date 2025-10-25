@@ -1,9 +1,9 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
 
-import { ForgeLinked } from '../../'
+import { ForgeLinked } from '../..'
 
 export default new NativeFunction({
-  name: '$playerSetVolume',
+  name: '$playerFiltersSetVolume',
   description: 'Set the Filter Volume',
   version: '2.1.0',
   brackets: true,

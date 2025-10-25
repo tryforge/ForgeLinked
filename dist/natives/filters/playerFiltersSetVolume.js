@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const forgescript_1 = require("@tryforge/forgescript");
-const __1 = require("../../");
+const __1 = require("../..");
 exports.default = new forgescript_1.NativeFunction({
-    name: '$playerSetVolume',
+    name: '$playerFiltersSetVolume',
     description: 'Set the Filter Volume',
     version: '2.1.0',
     brackets: true,
@@ -40,4 +40,4 @@ exports.default = new forgescript_1.NativeFunction({
         return this.success(res);
     },
 });
-//# sourceMappingURL=playerSetVolume.js.map
+//# sourceMappingURL=playerFiltersSetVolume.js.map

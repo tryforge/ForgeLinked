@@ -1,8 +1,9 @@
 module.exports = {
   code: `
+    $defer
     $onlyIf[$playerExists==true;$ephemeral The bot is not in a voice channel for this guild.]
     $try[
-      $jsonLoad[track;$playerAddTrack[$option[platform]:$option[query]]]
+      $jsonLoad[track;$playerAddTrack[$guildID;$option[platform]:$option[query]]]
       $title[Success]
       $addField[Name;$env[track;trackTitle];false]
       $addField[Author;$env[track;trackAuthor];true]

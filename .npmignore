@@ -5,3 +5,4 @@ metadata
 tsconfig.json
 pnpm-workspace.yaml
 .env
+__test__/lavalink

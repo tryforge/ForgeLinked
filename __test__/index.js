@@ -7,16 +7,15 @@ const lavalink = new ForgeLinked({
 nodes: [
     {
         id: "Public Lavalink Server",
-        host: "lavalink.zack911.xyz",          // or your VPS IP/domain
-        port: 443,
-        authorization: "ZackIsSoCool",  // ✅ must be 'authorization'
-        secure: true
-    }    
+        host: "localhost",
+        port: 3976,
+        authorization: "ZackIsSoCool",
+        secure: false
+    }
 ],
     playerOptions: {
         defaultSearchPlatform: "youtube"
     },
-    events: ['linkedPlayerCreate', 'linkedPlayerDestroy', 'error']
 })
 
 const client = new ForgeClient({

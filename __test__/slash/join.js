@@ -2,7 +2,7 @@ module.exports = {
   code: `
     $onlyIf[$playerExists==true;$ephemeral The bot is already in a voice channel for this guild. It cannot be in 2 voice channels at the same time]
     $try[
-      $!playerCreate[$option[voice_channel];$channelID;$option[volume]]
+      $!playerCreate[$guildID;$option[voice_channel];$channelID;$option[volume]]
       $!playerJoinVC
       $title[Success]
       $description[Player created successfully]

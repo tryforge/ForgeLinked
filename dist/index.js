@@ -16,7 +16,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
     options;
     name = 'ForgeLink';
     description = 'ForgeScript integration with lavalink-client';
-    version = '2.0.1';
+    version = '2.1.0';
     client;
     lavalink;
     commands;

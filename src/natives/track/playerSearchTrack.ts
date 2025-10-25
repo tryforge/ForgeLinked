@@ -25,7 +25,8 @@ export default new NativeFunction({
     },
     {
       name: 'source',
-      description: 'The source to use. Such as yt for youtube ytm for youtube music etc. Depends on the lavalink server config',
+      description:
+        'The source to use. Such as yt for youtube ytm for youtube music etc. Depends on the lavalink server config',
       type: ArgType.String,
       required: false,
       rest: false,
@@ -43,7 +44,7 @@ export default new NativeFunction({
       type: ArgType.Number,
       required: false,
       rest: false,
-    }
+    },
   ],
   output: ArgType.Json,
   async execute(ctx, [guildId, query, source, requester, limit]) {

@@ -23,9 +23,16 @@ exports.default = new forgescript_1.NativeFunction({
             required: false,
             rest: false,
         },
+        {
+            name: 'throwError',
+            description: 'Whether to throw an error if the position is out of bounds',
+            type: forgescript_1.ArgType.Boolean,
+            required: false,
+            rest: false,
+        },
     ],
     output: forgescript_1.ArgType.Boolean,
-    execute(ctx, [guildId, position]) {
+    execute(ctx, [guildId, position, throwError]) {
         const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
         if (!linked)
             return this.customError('ForgeLinked is not initialized');
@@ -36,7 +43,11 @@ exports.default = new forgescript_1.NativeFunction({
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
-        player.skip(position || undefined);
+        if ((position || 0) > player.queue.tracks.length)
+            return this.customError('Cannot skip more than the queue size.');
+        if (!player.queue.tracks.length && typeof position === 'boolean' && position === true)
+            return this.customError("Can't skip more than the queue size");
+        player.skip(position || undefined, throwError || false);
         return this.success(true);
     },
 });

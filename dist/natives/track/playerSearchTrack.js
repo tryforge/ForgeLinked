@@ -43,7 +43,7 @@ exports.default = new forgescript_1.NativeFunction({
             type: forgescript_1.ArgType.Number,
             required: false,
             rest: false,
-        }
+        },
     ],
     output: forgescript_1.ArgType.Json,
     async execute(ctx, [guildId, query, source, requester, limit]) {

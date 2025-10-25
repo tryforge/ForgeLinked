@@ -1,6 +1,7 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
-import { ForgeLinked } from '../../index.js'
 import { Guild } from 'discord.js'
+
+import { ForgeLinked } from '../../index.js'
 
 export default new NativeFunction({
   name: '$playerSkip',
@@ -24,12 +25,12 @@ export default new NativeFunction({
       rest: false,
     },
     {
-      name : 'throwError',
-      description : 'Whether to throw an error if the position is out of bounds',
-      type : ArgType.Boolean,
-      required : false,
-      rest : false,
-    }
+      name: 'throwError',
+      description: 'Whether to throw an error if the position is out of bounds',
+      type: ArgType.Boolean,
+      required: false,
+      rest: false,
+    },
   ],
   output: ArgType.Boolean,
   execute(ctx, [guildId, position, throwError]) {
@@ -42,8 +43,10 @@ export default new NativeFunction({
       )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
-    if ((position || 0) > player.queue.tracks.length) return this.customError('Cannot skip more than the queue size.')
-    if (!player.queue.tracks.length && (typeof position === "boolean" && position === true)) return this.customError("Can't skip more than the queue size");
+    if ((position || 0) > player.queue.tracks.length)
+      return this.customError('Cannot skip more than the queue size.')
+    if (!player.queue.tracks.length && typeof position === 'boolean' && position === true)
+      return this.customError("Can't skip more than the queue size")
     player.skip(position || undefined, throwError || false)
     return this.success(true)
   },

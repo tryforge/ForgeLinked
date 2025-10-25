@@ -5,5 +5,11 @@ declare const _default: NativeFunction<[{
     type: ArgType.Guild;
     required: false;
     rest: false;
+}, {
+    name: string;
+    description: string;
+    type: ArgType.String;
+    required: false;
+    rest: true;
 }], true>;
 export default _default;

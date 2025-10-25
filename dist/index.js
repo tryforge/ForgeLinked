@@ -73,7 +73,8 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
             });
         });
         this.load(path_1.default.join(__dirname, './natives'));
-        client.on('ready', () => {
+        client.on('ready', async () => {
+            await new Promise((res) => setTimeout(res, 3000));
             this.lavalink.init({
                 id: client.user.id,
                 username: client.user.username,
@@ -89,6 +90,9 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
                 });
             }
         }
+        this.lavalink.nodeManager.on('error', (error) => {
+            forgescript_1.Logger.error('Lavalink Error:', error);
+        });
         console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`);
     }
 }

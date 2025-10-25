@@ -59,7 +59,7 @@ export type TransformEvents<T> = {
 export class ForgeLinked extends ForgeExtension {
   name = 'ForgeLink'
   description = 'ForgeScript integration with lavalink-client'
-  version = '2.0.1'
+  version = '2.1.0'
 
   public client!: ForgeClient
   public lavalink!: LavalinkManager

@@ -1,6 +1,6 @@
 {
   "name": "@tryforge/forge.linked",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A package to extend forgescript to implement music capabilities via lavalink",
   "main": "dist/index.js",
   "scripts": {

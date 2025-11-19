@@ -52,6 +52,11 @@ export default new NativeFunction({
     if (!linked) return this.customError('ForgeLinked is not initialized')
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
+    const info = await player.node.fetchInfo()
+    const supported = info.sourceManagers || []
+    if (source !== null) {
+      if (!supported.includes(source)) return this.customError('Source not supported')
+    }
     const result = await player.search(`${source}:${query}`, {
       requester: requester?.id || ctx.member?.id,
     })

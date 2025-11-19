@@ -14,14 +14,16 @@ const pkg = JSON.parse((0, fs_1.readFileSync)((0, path_1.join)(process.cwd(), 'p
 const version = pkg.version;
 async function main() {
     let skip = false;
-    const msg = (await (0, prompt_js_1.default)('Commit message: ')).replace(/(--?(\w+))/gim, (match) => {
+    const msg = (await (0, prompt_js_1.default)('Commit message: '))
+        .replace(/(--?(\w+))/gim, (match) => {
         const name = match.match(/\w+/)?.[0]?.toLowerCase();
         if (name === 'hide')
             skip = true;
         else
             throw new Error(`--${name} is not a valid flag.`);
         return '';
-    }).trim();
+    })
+        .trim();
     const fileName = (0, path_1.join)(path, 'changelogs.json');
     const json = (0, fs_1.existsSync)(fileName)
         ? JSON.parse((0, fs_1.readFileSync)(fileName, 'utf-8'))

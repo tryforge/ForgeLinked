@@ -1,6 +1,7 @@
 import { execSync } from 'child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
+
 import prompt from './prompt.js'
 
 const path = './metadata'
@@ -12,12 +13,14 @@ const version = pkg.version
 async function main() {
   let skip = false
 
-  const msg = (await prompt('Commit message: ')).replace(/(--?(\w+))/gim, (match) => {
-    const name = match.match(/\w+/)?.[0]?.toLowerCase()
-    if (name === 'hide') skip = true
-    else throw new Error(`--${name} is not a valid flag.`)
-    return ''
-  }).trim()
+  const msg = (await prompt('Commit message: '))
+    .replace(/(--?(\w+))/gim, (match) => {
+      const name = match.match(/\w+/)?.[0]?.toLowerCase()
+      if (name === 'hide') skip = true
+      else throw new Error(`--${name} is not a valid flag.`)
+      return ''
+    })
+    .trim()
 
   const fileName = join(path, 'changelogs.json')
   const json: Record<string, object[]> = existsSync(fileName)

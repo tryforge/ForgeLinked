@@ -30,7 +30,6 @@ export default new NativeFunction({
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
     const prev = player.queue.previous[0]
-    console.log(prev?.info.title, player.queue.current)
     if (prev?.info.identifier == player.queue.current?.info.identifier) return this.success(false)
     return this.success(true)
   },

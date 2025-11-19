@@ -236,6 +236,11 @@
   ],
   "2.1.2": [
     {
+      "message": "Removed logs from some functions left in testing",
+      "timestamp": "2025-11-19T12:30:14.329Z",
+      "author": "Zack-911"
+    },
+    {
       "message": "Fix: Had overlapping function names",
       "timestamp": "2025-10-25T13:03:00.611Z",
       "author": "Zack-911"

@@ -50,15 +50,23 @@ export default new NativeFunction({
   async execute(ctx, [guildId, query, source, requester, limit]) {
     const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
+
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
+
     const info = await player.node.fetchInfo()
     const supported = info.sourceManagers || []
-    if (source !== null) {
-      if (!supported.includes(source)) return this.customError('Source not supported')
+    let finalQuery = query
+
+    if (source) {
+      if (!supported.includes(source)) {
+        return this.customError(`Source '${source}' not supported by the Lavalink server`)
+      }
+      finalQuery = `${source}:${query}`
     }
-    const result = await player.search(`${source}:${query}`, {
-      requester: requester?.id || ctx.member?.id,
+
+    const result = await player.search(finalQuery, {
+      requester: requester?.id ?? ctx.member?.id,
     })
 
     if (!result.tracks.length) return this.customError('No results found!')
@@ -68,6 +76,7 @@ export default new NativeFunction({
 
     return this.successJSON({
       status: 'success',
+      source,
       type: result.loadType,
       message:
         result.loadType === 'playlist'
@@ -82,7 +91,8 @@ export default new NativeFunction({
         duration: track.info.duration,
         url: track.info.uri,
         thumbnail: track.info.artworkUrl,
+        source,
       })),
     })
-  },
+  }
 })

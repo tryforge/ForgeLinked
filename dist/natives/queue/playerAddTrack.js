@@ -26,37 +26,56 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.Json,
     async execute(ctx, [guildId, query]) {
-        const lavalink = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
-        let player = lavalink.getPlayer(guildId.id);
-        if (!player)
-            return this.customError('Player not found');
-        if (!player.connected)
-            await player.connect();
-        const result = await player.search({ query, source: 'ytsearch' }, ctx.member);
-        if (!result || !result.tracks.length)
-            return this.customError('No results found!');
-        if (result.loadType === 'playlist') {
-            player.queue.add(result.tracks);
+        try {
+            const extension = ctx.client.getExtension(index_js_1.ForgeLinked, true);
+            if (!extension)
+                return this.customError('ForgeLinked extension not found');
+            const lavalink = extension.lavalink;
+            let player = lavalink.getPlayer(guildId.id);
+            if (!player)
+                return this.customError('Player not found for this guild.');
+            if (!player.connected) {
+                try {
+                    await player.connect();
+                }
+                catch (connErr) {
+                    return this.customError(`Failed to connect to voice: ${connErr instanceof Error ? connErr.message : 'Unknown error'}`);
+                }
+            }
+            const result = await player.search({ query, source: 'ytsearch' }, ctx.member).catch(() => null);
+            if (!result || !result.tracks.length || result.loadType === 'empty') {
+                return this.customError('No results found for the provided query.');
+            }
+            if (result.loadType === 'error') {
+                return this.customError('An error occurred while fetching the track.');
+            }
+            if (result.loadType === 'playlist') {
+                player.queue.add(result.tracks);
+            }
+            else {
+                player.queue.add(result.tracks[0]);
+            }
+            if (!player.playing && !player.paused) {
+                await player.play().catch((e) => this.customError(e.message));
+            }
+            const requester = result.tracks[0].requester;
+            return this.successJSON({
+                status: 'success',
+                type: result.loadType,
+                message: result.loadType === 'playlist'
+                    ? `Queued ${result.tracks.length} tracks from ${result.playlist?.title}`
+                    : `Queued ${result.tracks[0].info.title}`,
+                playlistName: result.loadType === 'playlist' ? result.playlist?.title : null,
+                trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
+                trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
+                trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,
+                trackImage: result.tracks[0].info.artworkUrl,
+                requester: requester?.id || 'Unknown',
+            });
         }
-        else {
-            player.queue.add(result.tracks[0]);
+        catch (error) {
+            return this.customError(`Internal Error: ${error.message ?? 'Unknown'}`);
         }
-        if (!player.playing)
-            await player.play();
-        const requester = result.tracks[0].requester;
-        return this.successJSON({
-            status: 'success',
-            type: result.loadType,
-            message: result.loadType === 'playlist'
-                ? `Queued ${result.tracks.length} from ${result.playlist?.title}`
-                : `Queued ${result.tracks[0].info.title}`,
-            playlistName: result.loadType === 'playlist' ? result.playlist?.title : null,
-            trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
-            trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
-            trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,
-            trackImage: result.tracks[0].info.artworkUrl,
-            requester: requester?.id || 'Unknown',
-        });
     },
 });
 //# sourceMappingURL=playerAddTrack.js.map

@@ -27,38 +27,62 @@ export default new NativeFunction({
   ],
   output: ArgType.Json,
   async execute(ctx, [guildId, query]) {
-    const lavalink = ctx.client.getExtension(ForgeLinked, true).lavalink
-    let player = lavalink.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
+    try {
+      const extension = ctx.client.getExtension(ForgeLinked, true)
+      if (!extension) return this.customError('ForgeLinked extension not found')
 
-    if (!player.connected) await player.connect()
+      const lavalink = extension.lavalink
+      let player = lavalink.getPlayer(guildId.id)
 
-    const result = await player.search({ query, source: 'ytsearch' }, ctx.member)
-    if (!result || !result.tracks.length) return this.customError('No results found!')
+      if (!player) return this.customError('Player not found for this guild.')
+      if (!player.connected) {
+        try {
+          await player.connect()
+        } catch (connErr) {
+          return this.customError(
+            `Failed to connect to voice: ${connErr instanceof Error ? connErr.message : 'Unknown error'}`,
+          )
+        }
+      }
+      const result = await player
+        .search({ query, source: 'ytsearch' }, ctx.member)
+        .catch(() => null)
 
-    if (result.loadType === 'playlist') {
-      player.queue.add(result.tracks)
-    } else {
-      player.queue.add(result.tracks[0])
+      if (!result || !result.tracks.length || result.loadType === 'empty') {
+        return this.customError('No results found for the provided query.')
+      }
+
+      if (result.loadType === 'error') {
+        return this.customError('An error occurred while fetching the track.')
+      }
+      if (result.loadType === 'playlist') {
+        player.queue.add(result.tracks)
+      } else {
+        player.queue.add(result.tracks[0])
+      }
+
+      if (!player.playing && !player.paused) {
+        await player.play().catch((e: Error) => this.customError(e.message))
+      }
+
+      const requester = result.tracks[0].requester as User
+
+      return this.successJSON({
+        status: 'success',
+        type: result.loadType,
+        message:
+          result.loadType === 'playlist'
+            ? `Queued ${result.tracks.length} tracks from ${result.playlist?.title}`
+            : `Queued ${result.tracks[0].info.title}`,
+        playlistName: result.loadType === 'playlist' ? result.playlist?.title : null,
+        trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
+        trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
+        trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,
+        trackImage: result.tracks[0].info.artworkUrl,
+        requester: requester?.id || 'Unknown',
+      })
+    } catch (error: any) {
+      return this.customError(`Internal Error: ${error.message ?? 'Unknown'}`)
     }
-
-    if (!player.playing) await player.play()
-
-    const requester = result.tracks[0].requester as User
-
-    return this.successJSON({
-      status: 'success',
-      type: result.loadType,
-      message:
-        result.loadType === 'playlist'
-          ? `Queued ${result.tracks.length} from ${result.playlist?.title}`
-          : `Queued ${result.tracks[0].info.title}`,
-      playlistName: result.loadType === 'playlist' ? result.playlist?.title : null,
-      trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
-      trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
-      trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,
-      trackImage: result.tracks[0].info.artworkUrl,
-      requester: requester?.id || 'Unknown',
-    })
   },
 })

@@ -55,12 +55,15 @@ exports.default = new forgescript_1.NativeFunction({
             return this.customError('Player not found');
         const info = await player.node.fetchInfo();
         const supported = info.sourceManagers || [];
-        if (source !== null) {
-            if (!supported.includes(source))
-                return this.customError('Source not supported');
+        let finalQuery = query;
+        if (source) {
+            if (!supported.includes(source)) {
+                return this.customError(`Source '${source}' not supported by the Lavalink server`);
+            }
+            finalQuery = `${source}:${query}`;
         }
-        const result = await player.search(`${source}:${query}`, {
-            requester: requester?.id || ctx.member?.id,
+        const result = await player.search(finalQuery, {
+            requester: requester?.id ?? ctx.member?.id,
         });
         if (!result.tracks.length)
             return this.customError('No results found!');
@@ -69,6 +72,7 @@ exports.default = new forgescript_1.NativeFunction({
             tracks = tracks.slice(0, limit);
         return this.successJSON({
             status: 'success',
+            source,
             type: result.loadType,
             message: result.loadType === 'playlist'
                 ? `Found ${tracks.length} tracks from ${result.playlist?.name}`
@@ -82,8 +86,9 @@ exports.default = new forgescript_1.NativeFunction({
                 duration: track.info.duration,
                 url: track.info.uri,
                 thumbnail: track.info.artworkUrl,
+                source,
             })),
         });
-    },
+    }
 });
 //# sourceMappingURL=playerSearchTrack.js.map

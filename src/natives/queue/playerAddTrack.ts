@@ -75,6 +75,7 @@ export default new NativeFunction({
             ? `Queued ${result.tracks.length} tracks from ${result.playlist?.title}`
             : `Queued ${result.tracks[0].info.title}`,
         playlistName: result.loadType === 'playlist' ? result.playlist?.title : null,
+        playlistUri: result.playlist?.uri ?? null,
         trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
         trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
         trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,

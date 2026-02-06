@@ -123,7 +123,7 @@ export class ForgeLinked extends ForgeExtension {
     })
 
     this.load(path.join(__dirname, './natives'))
-    client.on('ready', async () => {
+    client.on('clientReady', async () => {
       await new Promise((res) => setTimeout(res, 3000))
       this.lavalink.init({
         id: client.user.id,

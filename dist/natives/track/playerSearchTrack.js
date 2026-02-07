@@ -78,6 +78,7 @@ exports.default = new forgescript_1.NativeFunction({
                 ? `Found ${tracks.length} tracks from ${result.playlist?.name}`
                 : `Found ${tracks.length} tracks matching the query.`,
             playlistName: result.loadType === 'playlist' ? result.playlist?.name : null,
+            playlistUri: result.loadType === 'playlist' ? result.playlist?.uri : null,
             requester: result.tracks[0].requester,
             trackCount: tracks.length,
             tracks: tracks.map((track) => ({
@@ -89,6 +90,6 @@ exports.default = new forgescript_1.NativeFunction({
                 source,
             })),
         });
-    }
+    },
 });
 //# sourceMappingURL=playerSearchTrack.js.map

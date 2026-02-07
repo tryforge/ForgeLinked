@@ -73,7 +73,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
             });
         });
         this.load(path_1.default.join(__dirname, './natives'));
-        client.on('ready', async () => {
+        client.on('clientReady', async () => {
             await new Promise((res) => setTimeout(res, 3000));
             this.lavalink.init({
                 id: client.user.id,

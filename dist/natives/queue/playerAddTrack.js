@@ -42,7 +42,9 @@ exports.default = new forgescript_1.NativeFunction({
                     return this.customError(`Failed to connect to voice: ${connErr instanceof Error ? connErr.message : 'Unknown error'}`);
                 }
             }
-            const result = await player.search({ query, source: 'ytsearch' }, ctx.member).catch(() => null);
+            const result = await player
+                .search({ query, source: 'ytsearch' }, ctx.member)
+                .catch(() => null);
             if (!result || !result.tracks.length || result.loadType === 'empty') {
                 return this.customError('No results found for the provided query.');
             }
@@ -66,6 +68,7 @@ exports.default = new forgescript_1.NativeFunction({
                     ? `Queued ${result.tracks.length} tracks from ${result.playlist?.title}`
                     : `Queued ${result.tracks[0].info.title}`,
                 playlistName: result.loadType === 'playlist' ? result.playlist?.title : null,
+                playlistUri: result.loadType === 'playlist' ? result.playlist?.uri : null,
                 trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
                 trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
                 trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,

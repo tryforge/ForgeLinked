@@ -23,9 +23,16 @@ exports.default = new forgescript_1.NativeFunction({
             required: true,
             rest: false,
         },
+        {
+            name: 'source',
+            description: 'The source to use',
+            type: forgescript_1.ArgType.String,
+            required: false,
+            rest: false,
+        }
     ],
     output: forgescript_1.ArgType.Json,
-    async execute(ctx, [guildId, query]) {
+    async execute(ctx, [guildId, query, source]) {
         try {
             const extension = ctx.client.getExtension(index_js_1.ForgeLinked, true);
             if (!extension)
@@ -42,8 +49,9 @@ exports.default = new forgescript_1.NativeFunction({
                     return this.customError(`Failed to connect to voice: ${connErr instanceof Error ? connErr.message : 'Unknown error'}`);
                 }
             }
+            const platform = (source || 'ytsearch');
             const result = await player
-                .search({ query, source: 'ytsearch' }, ctx.member)
+                .search({ query, source: platform }, ctx.member)
                 .catch(() => null);
             if (!result || !result.tracks.length || result.loadType === 'empty') {
                 return this.customError('No results found for the provided query.');
@@ -72,6 +80,7 @@ exports.default = new forgescript_1.NativeFunction({
                 trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
                 trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
                 trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,
+                trackUri: result.loadType !== 'playlist' ? result.tracks[0].info.uri : null,
                 trackImage: result.tracks[0].info.artworkUrl,
                 requester: requester?.id || 'Unknown',
             });

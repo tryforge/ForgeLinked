@@ -1,5 +1,6 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
 import { User } from 'discord.js'
+import { SearchPlatform } from 'lavalink-client'
 
 import { ForgeLinked } from '../../index.js'
 
@@ -24,9 +25,16 @@ export default new NativeFunction({
       required: true,
       rest: false,
     },
+    {
+      name: 'source',
+      description: 'The source to use',
+      type: ArgType.String,
+      required: false,
+      rest: false,
+    }
   ],
   output: ArgType.Json,
-  async execute(ctx, [guildId, query]) {
+  async execute(ctx, [guildId, query, source]) {
     try {
       const extension = ctx.client.getExtension(ForgeLinked, true)
       if (!extension) return this.customError('ForgeLinked extension not found')
@@ -44,8 +52,9 @@ export default new NativeFunction({
           )
         }
       }
+      const platform = (source || 'ytsearch') as SearchPlatform
       const result = await player
-        .search({ query, source: 'ytsearch' }, ctx.member)
+        .search({ query, source: platform }, ctx.member)
         .catch(() => null)
 
       if (!result || !result.tracks.length || result.loadType === 'empty') {
@@ -79,6 +88,7 @@ export default new NativeFunction({
         trackCount: result.loadType === 'playlist' ? result.tracks.length : 1,
         trackTitle: result.loadType !== 'playlist' ? result.tracks[0].info.title : null,
         trackAuthor: result.loadType !== 'playlist' ? result.tracks[0].info.author : null,
+        trackUri: result.loadType !== 'playlist' ? result.tracks[0].info.uri : null,
         trackImage: result.tracks[0].info.artworkUrl,
         requester: requester?.id || 'Unknown',
       })

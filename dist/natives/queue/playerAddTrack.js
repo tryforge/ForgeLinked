@@ -29,7 +29,7 @@ exports.default = new forgescript_1.NativeFunction({
             type: forgescript_1.ArgType.String,
             required: false,
             rest: false,
-        }
+        },
     ],
     output: forgescript_1.ArgType.Json,
     async execute(ctx, [guildId, query, source]) {
@@ -50,9 +50,7 @@ exports.default = new forgescript_1.NativeFunction({
                 }
             }
             const platform = (source || 'ytsearch');
-            const result = await player
-                .search({ query, source: platform }, ctx.member)
-                .catch(() => null);
+            const result = await player.search({ query, source: platform }, ctx.member).catch(() => null);
             if (!result || !result.tracks.length || result.loadType === 'empty') {
                 return this.customError('No results found for the provided query.');
             }

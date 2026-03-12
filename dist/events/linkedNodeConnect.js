@@ -20,4 +20,4 @@ exports.default = new ForgeLinkedEventManager_1.ForgeLinkedEventHandler({
         }
     },
 });
-//# sourceMappingURL=LinkedNodeConnect.js.map
+//# sourceMappingURL=linkedNodeConnect.js.map

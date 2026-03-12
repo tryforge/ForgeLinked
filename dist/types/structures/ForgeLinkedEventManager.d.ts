@@ -1,5 +1,5 @@
 import { BaseEventHandler, ForgeClient } from '@tryforge/forgescript';
-import { Player, MiniMap, LavalinkNode, NodeLinkNode } from 'lavalink-client';
+import { LavalinkNode, MiniMap, NodeLinkNode, Player } from 'lavalink-client';
 export interface IForgeLinkedEvents {
     error: [Error];
     linkedPlayerCreate: [Player];

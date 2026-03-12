@@ -1,4 +1,5 @@
 import { Interpreter } from '@tryforge/forgescript'
+
 import { ForgeLinked } from '..'
 import { ForgeLinkedEventHandler } from '../structures/ForgeLinkedEventManager'
 

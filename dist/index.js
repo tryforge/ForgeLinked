@@ -79,6 +79,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
                 id: client.user.id,
                 username: client.user.username,
             });
+            this.emitter.emit('linkedNodeConnect', this.lavalink.nodeManager.nodes);
         });
         if (this.options.events?.length) {
             for (const linkedEvent of this.options.events) {

@@ -129,7 +129,12 @@ export class ForgeLinked extends ForgeExtension {
         id: client.user.id,
         username: client.user.username,
       })
-      this.emitter.emit('linkedNodeConnect', this.lavalink.nodeManager.nodes)
+      const nodes = this.lavalink.nodeManager.nodes.map((node) => ({
+        id: node.id,
+        info: node.info,
+        type: node.nodeType
+      }))
+      this.emitter.emit('linkedNodeConnect', nodes)
     })
 
     if (this.options.events?.length) {

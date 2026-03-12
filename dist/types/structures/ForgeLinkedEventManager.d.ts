@@ -1,5 +1,5 @@
 import { BaseEventHandler, ForgeClient } from '@tryforge/forgescript';
-import { LavalinkNode, MiniMap, NodeLinkNode, Player } from 'lavalink-client';
+import { Player } from 'lavalink-client';
 export interface IForgeLinkedEvents {
     error: [Error];
     linkedPlayerCreate: [Player];
@@ -29,7 +29,7 @@ export interface IForgeLinkedEvents {
     linkedLyricsFound: [Player, any, any];
     linkedLyricsNotFound: [Player, any, any];
     linkedDebug: [string, any];
-    linkedNodeConnect: [MiniMap<string, LavalinkNode | NodeLinkNode>];
+    linkedNodeConnect: [any];
 }
 export declare class ForgeLinkedEventHandler<T extends keyof IForgeLinkedEvents> extends BaseEventHandler<IForgeLinkedEvents, T> {
     register(client: ForgeClient): void;

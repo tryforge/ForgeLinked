@@ -131,10 +131,9 @@ export class ForgeLinked extends ForgeExtension {
       this.lavalink.nodeManager.on("connect", (node) => {
         const nodeData = {
           id: node.id,
-          info: node.info,
-          type: node.nodeType
+          info: node.info
         };
-        this.emitter.emit('linkedNodeConnect', [nodeData]); 
+        this.emitter.emit('linkedNodeConnect', [nodeData]);
       });
     });
 

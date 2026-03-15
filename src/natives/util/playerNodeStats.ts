@@ -25,14 +25,9 @@ export default new NativeFunction({
     let node: any | undefined
 
     if (nodeId) {
-      // Try to get a specific node by ID
-      // @ts-ignore - nodes is expected to be a Map-like structure
-      node = linked.nodes?.get?.(String(nodeId))
+      node = linked.nodeManager.nodes.get(String(nodeId))
     } else {
-      // Fallback to the first available node
-      // @ts-ignore - nodes is expected to be an iterable of node values
-      const values = linked.nodes?.values?.()
-      node = values ? values.next().value : undefined
+      node = linked.nodeManager.nodes.values().next().value
     }
 
     if (!node) return this.customError('Lavalink node not found')

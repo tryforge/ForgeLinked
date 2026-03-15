@@ -74,15 +74,21 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
         });
         this.load(path_1.default.join(__dirname, './natives'));
         client.on('clientReady', async () => {
-            await this.lavalink.init({
-                id: client.user.id,
-                username: client.user.username,
-            });
+            try {
+                await this.lavalink.init({
+                    id: client.user.id,
+                    username: client.user.username,
+                });
+            }
+            catch (err) {
+                forgescript_1.Logger.error("Lavalink failed to initialize:", err);
+                this.emitter.emit('error', err);
+                return;
+            }
             this.lavalink.nodeManager.on("connect", (node) => {
                 const nodeData = {
                     id: node.id,
-                    info: node.info,
-                    type: node.nodeType
+                    info: node.info
                 };
                 this.emitter.emit('linkedNodeConnect', [nodeData]);
             });

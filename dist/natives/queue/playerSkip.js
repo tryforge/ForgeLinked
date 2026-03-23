@@ -13,7 +13,7 @@ exports.default = new forgescript_1.NativeFunction({
             name: 'guildId',
             description: 'The guild id to skip the track for',
             type: forgescript_1.ArgType.Guild,
-            required: true,
+            required: false,
             rest: false,
         },
         {
@@ -39,14 +39,12 @@ exports.default = new forgescript_1.NativeFunction({
         if (!guildId)
             guildId = ctx.guild;
         if (!guildId)
-            return this.customError('Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat');
+            return this.customError('Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat');
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
         if ((position || 0) > player.queue.tracks.length)
             return this.customError('Cannot skip more than the queue size.');
-        if (!player.queue.tracks.length && typeof position === 'boolean' && position === true)
-            return this.customError("Can't skip more than the queue size");
         player.skip(position || undefined, throwError || false);
         return this.success(true);
     },

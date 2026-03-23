@@ -3,7 +3,7 @@ declare const _default: NativeFunction<[{
     name: string;
     description: string;
     type: ArgType.Guild;
-    required: true;
+    required: false;
     rest: false;
 }, {
     name: string;

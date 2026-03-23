@@ -1,5 +1,4 @@
-import { NativeFunction } from '@tryforge/forgescript';
-import { ArgType } from '@tryforge/forgescript';
+import { ArgType, NativeFunction } from '@tryforge/forgescript';
 declare enum EqBand {
     Band60Hz = 0,
     Band170Hz = 1,

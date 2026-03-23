@@ -6,7 +6,7 @@ export default new NativeFunction({
   name: '$playerNodeStats',
   description: 'Get CPU, memory, and other stats of a Lavalink node',
   version: '2.1.0',
-  brackets: false,
+  brackets: true,
   unwrap: true,
   args: [
     {
@@ -27,10 +27,12 @@ export default new NativeFunction({
     if (nodeId) {
       node = linked.nodeManager.nodes.get(String(nodeId))
     } else {
-      node = linked.nodeManager.nodes.values().next().value
+      node = Array.from(linked.nodeManager.nodes.values())[0]
     }
 
     if (!node) return this.customError('Lavalink node not found')
+
+    if (!node.connected) return this.customError('Lavalink node is not connected')
 
     return this.successJSON(node.stats ?? {})
   },

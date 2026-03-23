@@ -69,7 +69,7 @@ exports.default = new forgescript_1.NativeFunction({
             voiceChannelId: voiceId.id,
             textChannelId: textId?.id || ctx.channel?.id,
             volume: volume || 100,
-            selfDeaf: selfDeaf || true,
+            selfDeaf: selfDeaf ?? true,
             selfMute: selfMute || false,
             node: node || undefined,
         });

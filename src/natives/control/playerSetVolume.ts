@@ -30,6 +30,7 @@ export default new NativeFunction({
     if (!linked) return this.customError('ForgeLinked is not initialized')
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
+    if (volume < 0 || volume > 1000) return this.customError('Volume must be between 0 and 1000')
     player.setVolume(volume)
     return this.success(true)
   },

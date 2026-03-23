@@ -124,17 +124,9 @@ export class ForgeLinked extends ForgeExtension {
 
     this.load(path.join(__dirname, './natives'))
     client.on('clientReady', async () => {
-      try {
-        await this.lavalink.init({
-          id: client.user.id,
-          username: client.user.username,
-        })
-      } catch (err) {
-        Logger.error('Lavalink failed to initialize:', err)
-        this.emitter.emit('error', err as Error)
-        return
-      }
-
+      // Register the connect listener BEFORE init() so we never miss a node
+      // connection — including fallback reconnects when one of multiple nodes
+      // fails during initialisation and comes back later.
       this.lavalink.nodeManager.on('connect', (node) => {
         const nodeData = {
           id: node.id,
@@ -143,6 +135,20 @@ export class ForgeLinked extends ForgeExtension {
 
         this.emitter.emit('linkedNodeConnect', [nodeData])
       })
+
+      try {
+        await this.lavalink.init({
+          id: client.user.id,
+          username: client.user.username,
+        })
+      } catch (err) {
+        // One or more nodes failed to connect on startup.
+        // We intentionally do NOT return here — remaining nodes may still be
+        // healthy, and failed nodes will fire 'connect' via the listener above
+        // once they come back (fallback behaviour).
+        Logger.error('Lavalink failed to initialize:', err)
+        this.emitter.emit('error', err as Error)
+      }
     })
 
     if (this.options.events?.length) {

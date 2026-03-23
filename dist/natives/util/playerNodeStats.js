@@ -6,7 +6,9 @@ exports.default = new forgescript_1.NativeFunction({
     name: '$playerNodeStats',
     description: 'Get CPU, memory, and other stats of a Lavalink node',
     version: '2.1.0',
-    brackets: false,
+    // brackets must be true so the optional nodeId argument can actually be passed,
+    // e.g. $playerNodeStats[Universe].  With brackets:false the arg is unreachable.
+    brackets: true,
     unwrap: true,
     args: [
         {
@@ -27,10 +29,16 @@ exports.default = new forgescript_1.NativeFunction({
             node = linked.nodeManager.nodes.get(String(nodeId));
         }
         else {
-            node = linked.nodeManager.nodes.values().next().value;
+            // .values().next().value is unreliable on some Map implementations —
+            // use Array.from to guarantee we get the first entry.
+            node = Array.from(linked.nodeManager.nodes.values())[0];
         }
         if (!node)
             return this.customError('Lavalink node not found');
+        // node.stats is a cached object that persists after a node disconnects.
+        // Return an error instead of stale data when the node is offline.
+        if (!node.connected)
+            return this.customError('Lavalink node is not connected');
         return this.successJSON(node.stats ?? {});
     },
 });

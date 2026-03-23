@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       lavalink-client:
-        specifier: ^2.9.7
-        version: 2.9.7
+        specifier: ^2.9.9
+        version: 2.9.9
       opusscript:
         specifier: ^0.1.1
         version: 0.1.1
@@ -23,10 +23,10 @@ importers:
         version: 5.2.2(prettier@3.8.1)
       '@tryforge/forgescript':
         specifier: github:tryforge/ForgeScript#dev
-        version: https://codeload.github.com/tryforge/ForgeScript/tar.gz/071401e5d3e57c7b57eeba7f1ae1056b9ab4aaca
+        version: https://codeload.github.com/tryforge/ForgeScript/tar.gz/799de82416d904614194971b0f1b8f1460de2c05
       '@types/node':
-        specifier: ^24.11.0
-        version: 24.11.0
+        specifier: ^24.12.0
+        version: 24.12.0
       discord.js:
         specifier: ^14.25.1
         version: 14.25.1
@@ -62,8 +62,8 @@ packages:
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/parser@7.29.0':
-    resolution: {integrity: sha512-IyDgFV5GeDUVX4YdF/3CPULtVGSXXMLh1xVIgdCgxApktqnQV0r7/8Nqthg+8YLGaAtdyIlo2qIdZrbCv4+7ww==}
+  '@babel/parser@7.29.2':
+    resolution: {integrity: sha512-4GgRzy/+fsBa72/RZVJmGKPmZu9Byn8o4MoLpmNe1m8ZfYnz5emHLQz3U4gLud6Zwl0RZIcgiLD7Uq7ySFuDLA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -79,8 +79,8 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
-  '@discordjs/builders@1.13.1':
-    resolution: {integrity: sha512-cOU0UDHc3lp/5nKByDxkmRiNZBpdp0kx55aarbiAfakfKJHlxv/yFW1zmIqCAmwH5CRlrH9iMFKJMpvW4DPB+w==}
+  '@discordjs/builders@1.14.0':
+    resolution: {integrity: sha512-7pVKxVWkeLUtrTo9nTYkjRcJk0Hlms6lYervXAD7E7+K5lil9ms2JrEB1TalMiHvQMh7h1HJZ4fCJa0/vHpl4w==}
     engines: {node: '>=16.11.0'}
 
   '@discordjs/collection@1.5.3':
@@ -95,8 +95,8 @@ packages:
     resolution: {integrity: sha512-y4UPwWhH6vChKRkGdMB4odasUbHOUwy7KL+OVwF86PvT6QVOwElx+TiI1/6kcmcEe+g5YRXJFiXSXUdabqZOvQ==}
     engines: {node: '>=16.11.0'}
 
-  '@discordjs/rest@2.6.0':
-    resolution: {integrity: sha512-RDYrhmpB7mTvmCKcpj+pc5k7POKszS4E2O9TYc+U+Y4iaCP+r910QdO43qmpOja8LRr1RJ0b3U+CqVsnPqzf4w==}
+  '@discordjs/rest@2.6.1':
+    resolution: {integrity: sha512-wwQdgjeaoYFiaG+atbqx6aJDpqW7JHAo0HrQkBTbYzM3/PJ3GweQIpgElNcGZ26DCUOXMyawYd0YF7vtr+fZXg==}
     engines: {node: '>=18'}
 
   '@discordjs/util@1.2.0':
@@ -136,6 +136,10 @@ packages:
     resolution: {integrity: sha512-jjmJywLAFoWeBi1W7994zZyiNWPIiqRRNAmSERxyg93xRGzNYvGjlZ0gR6x0F4gPRi2+0O6S71kOZYyr3cxaIQ==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
+  '@sapphire/snowflake@3.5.5':
+    resolution: {integrity: sha512-xzvBr1Q1c4lCe7i6sRnrofxeO1QTP/LKQ6A6qy0iB4x5yfiSfARMEQEghojzTNALDTcv8En04qYNIco9/K9eZQ==}
+    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
+
   '@trivago/prettier-plugin-sort-imports@5.2.2':
     resolution: {integrity: sha512-fYDQA9e6yTNmA13TLVSA+WMQRc5Bn/c0EUBditUHNfMMxN7M82c38b1kEggVE3pLpZ0FwkwJkUEKMiOi52JXFA==}
     engines: {node: '>18.12'}
@@ -152,13 +156,13 @@ packages:
       svelte:
         optional: true
 
-  '@tryforge/forgescript@https://codeload.github.com/tryforge/ForgeScript/tar.gz/071401e5d3e57c7b57eeba7f1ae1056b9ab4aaca':
-    resolution: {tarball: https://codeload.github.com/tryforge/ForgeScript/tar.gz/071401e5d3e57c7b57eeba7f1ae1056b9ab4aaca}
+  '@tryforge/forgescript@https://codeload.github.com/tryforge/ForgeScript/tar.gz/799de82416d904614194971b0f1b8f1460de2c05':
+    resolution: {tarball: https://codeload.github.com/tryforge/ForgeScript/tar.gz/799de82416d904614194971b0f1b8f1460de2c05}
     version: 2.7.0
     engines: {node: '>=16.11.0'}
 
-  '@types/node@24.11.0':
-    resolution: {integrity: sha512-fPxQqz4VTgPI/IQ+lj9r0h+fDR66bzoeMGHp8ASee+32OSGIkeASsoZuJixsQoVef1QJbeubcPBxKk22QVoWdw==}
+  '@types/node@24.12.0':
+    resolution: {integrity: sha512-GYDxsZi3ChgmckRT9HPU0WEhKLP08ev/Yfcq2AstjrDASOYCSXeyjDsHg4v5t4jOj7cyDX3vmprafKlWIG9MXQ==}
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
@@ -191,8 +195,8 @@ packages:
       supports-color:
         optional: true
 
-  discord-api-types@0.38.40:
-    resolution: {integrity: sha512-P/His8cotqZgQqrt+hzrocp9L8RhQQz1GkrCnC9TMJ8Uw2q0tg8YyqJyGULxhXn/8kxHETN4IppmOv+P2m82lQ==}
+  discord-api-types@0.38.42:
+    resolution: {integrity: sha512-qs1kya7S84r5RR8m9kgttywGrmmoHaRifU1askAoi+wkoSefLpZP6aGXusjNw5b0jD3zOg3LTwUa3Tf2iHIceQ==}
 
   discord.js@14.25.1:
     resolution: {integrity: sha512-2l0gsPOLPs5t6GFZfQZKnL1OJNYFcuC/ETWsW4VtKVD/tg4ICa9x+jb9bkPffkMdRpRpuUaO/fKkHCBeiCKh8g==}
@@ -220,8 +224,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  lavalink-client@2.9.7:
-    resolution: {integrity: sha512-tknzDqP58/cjn8ScywGyTPEGoXfqFBhZzbSM5n9hulhlaxQmzZvVN1mfKcfr1SCyE2nqXyPOHnmz8QVl80Iz6w==}
+  lavalink-client@2.9.9:
+    resolution: {integrity: sha512-BWb/ZpHqZHuyNROsX5T3m0vO4tRNGAZ5Esm7gHhkHNO2zYhBqRkc+n0DYoEtwEzSB5zhBQM/sCDCQm6c+xM29g==}
     engines: {bun: '>=1.1.27', node: '>=18.0.0'}
 
   lodash.snakecase@4.1.1:
@@ -279,8 +283,12 @@ packages:
     resolution: {integrity: sha512-gBLkYIlEnSp8pFbT64yFgGE6UIB9tAkhukC23PmMDCe5Nd+cRqKxSjw5y54MK2AZMgZfJWMaNE4nYUHgi1XEOw==}
     engines: {node: '>=18.17'}
 
-  ws@8.19.0:
-    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
+  undici@6.24.1:
+    resolution: {integrity: sha512-sC+b0tB1whOCzbtlx20fx3WgCXwkW627p4EA9uM+/tNNPkSS+eSEld6pAs9nDv7WbY1UUljBMYPtu9BCOrCWKA==}
+    engines: {node: '>=18.17'}
+
+  ws@8.20.0:
+    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -301,7 +309,7 @@ snapshots:
 
   '@babel/generator@7.29.1':
     dependencies:
-      '@babel/parser': 7.29.0
+      '@babel/parser': 7.29.2
       '@babel/types': 7.29.0
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
@@ -313,14 +321,14 @@ snapshots:
 
   '@babel/helper-validator-identifier@7.28.5': {}
 
-  '@babel/parser@7.29.0':
+  '@babel/parser@7.29.2':
     dependencies:
       '@babel/types': 7.29.0
 
   '@babel/template@7.28.6':
     dependencies:
       '@babel/code-frame': 7.29.0
-      '@babel/parser': 7.29.0
+      '@babel/parser': 7.29.2
       '@babel/types': 7.29.0
 
   '@babel/traverse@7.29.0':
@@ -328,7 +336,7 @@ snapshots:
       '@babel/code-frame': 7.29.0
       '@babel/generator': 7.29.1
       '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.29.0
+      '@babel/parser': 7.29.2
       '@babel/template': 7.28.6
       '@babel/types': 7.29.0
       debug: 4.4.3
@@ -340,12 +348,12 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@discordjs/builders@1.13.1':
+  '@discordjs/builders@1.14.0':
     dependencies:
       '@discordjs/formatters': 0.6.2
       '@discordjs/util': 1.2.0
       '@sapphire/shapeshift': 4.0.0
-      discord-api-types: 0.38.40
+      discord-api-types: 0.38.42
       fast-deep-equal: 3.1.3
       ts-mixer: 6.0.4
       tslib: 2.8.1
@@ -356,35 +364,35 @@ snapshots:
 
   '@discordjs/formatters@0.6.2':
     dependencies:
-      discord-api-types: 0.38.40
+      discord-api-types: 0.38.42
 
-  '@discordjs/rest@2.6.0':
+  '@discordjs/rest@2.6.1':
     dependencies:
       '@discordjs/collection': 2.1.1
       '@discordjs/util': 1.2.0
       '@sapphire/async-queue': 1.5.5
-      '@sapphire/snowflake': 3.5.3
+      '@sapphire/snowflake': 3.5.5
       '@vladfrangu/async_event_emitter': 2.4.7
-      discord-api-types: 0.38.40
+      discord-api-types: 0.38.42
       magic-bytes.js: 1.13.0
       tslib: 2.8.1
-      undici: 6.21.3
+      undici: 6.24.1
 
   '@discordjs/util@1.2.0':
     dependencies:
-      discord-api-types: 0.38.40
+      discord-api-types: 0.38.42
 
   '@discordjs/ws@1.2.3':
     dependencies:
       '@discordjs/collection': 2.1.1
-      '@discordjs/rest': 2.6.0
+      '@discordjs/rest': 2.6.1
       '@discordjs/util': 1.2.0
       '@sapphire/async-queue': 1.5.5
       '@types/ws': 8.18.1
       '@vladfrangu/async_event_emitter': 2.4.7
-      discord-api-types: 0.38.40
+      discord-api-types: 0.38.42
       tslib: 2.8.1
-      ws: 8.19.0
+      ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -414,10 +422,12 @@ snapshots:
 
   '@sapphire/snowflake@3.5.3': {}
 
+  '@sapphire/snowflake@3.5.5': {}
+
   '@trivago/prettier-plugin-sort-imports@5.2.2(prettier@3.8.1)':
     dependencies:
       '@babel/generator': 7.29.1
-      '@babel/parser': 7.29.0
+      '@babel/parser': 7.29.2
       '@babel/traverse': 7.29.0
       '@babel/types': 7.29.0
       javascript-natural-sort: 0.7.1
@@ -426,7 +436,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tryforge/forgescript@https://codeload.github.com/tryforge/ForgeScript/tar.gz/071401e5d3e57c7b57eeba7f1ae1056b9ab4aaca':
+  '@tryforge/forgescript@https://codeload.github.com/tryforge/ForgeScript/tar.gz/799de82416d904614194971b0f1b8f1460de2c05':
     dependencies:
       chalk: 4.1.2
       discord.js: 14.25.1
@@ -437,13 +447,13 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@types/node@24.11.0':
+  '@types/node@24.12.0':
     dependencies:
       undici-types: 7.16.0
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.11.0
+      '@types/node': 24.12.0
 
   '@vladfrangu/async_event_emitter@2.4.7': {}
 
@@ -466,18 +476,18 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  discord-api-types@0.38.40: {}
+  discord-api-types@0.38.42: {}
 
   discord.js@14.25.1:
     dependencies:
-      '@discordjs/builders': 1.13.1
+      '@discordjs/builders': 1.14.0
       '@discordjs/collection': 1.5.3
       '@discordjs/formatters': 0.6.2
-      '@discordjs/rest': 2.6.0
+      '@discordjs/rest': 2.6.1
       '@discordjs/util': 1.2.0
       '@discordjs/ws': 1.2.3
       '@sapphire/snowflake': 3.5.3
-      discord-api-types: 0.38.40
+      discord-api-types: 0.38.42
       fast-deep-equal: 3.1.3
       lodash.snakecase: 4.1.1
       magic-bytes.js: 1.13.0
@@ -499,10 +509,10 @@ snapshots:
 
   jsesc@3.1.0: {}
 
-  lavalink-client@2.9.7:
+  lavalink-client@2.9.9:
     dependencies:
       tslib: 2.8.1
-      ws: 8.19.0
+      ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -543,4 +553,6 @@ snapshots:
 
   undici@6.21.3: {}
 
-  ws@8.19.0: {}
+  undici@6.24.1: {}
+
+  ws@8.20.0: {}

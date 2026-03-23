@@ -29,10 +29,17 @@ exports.default = new forgescript_1.NativeFunction({
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
-        const prev = player.queue.previous[0];
-        if (prev?.info.identifier == player.queue.current?.info.identifier)
+        const previous = player.queue.previous;
+        // Empty history → nothing to go back to.
+        if (!previous.length)
             return this.success(false);
-        return this.success(true);
+        // lavalink-client pushes the currently-playing track into previous[0] the
+        // moment it starts, so checking only [0] is unreliable.  Scan the whole
+        // array and report true only when at least one entry differs from the
+        // current track.
+        const currentId = player.queue.current?.info.identifier;
+        const hasPrev = previous.some((t) => t.info.identifier !== currentId);
+        return this.success(hasPrev);
     },
 });
 //# sourceMappingURL=playerPreviousExists.js.map

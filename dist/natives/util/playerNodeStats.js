@@ -6,7 +6,7 @@ exports.default = new forgescript_1.NativeFunction({
     name: '$playerNodeStats',
     description: 'Get CPU, memory, and other stats of a Lavalink node',
     version: '2.1.0',
-    brackets: false,
+    brackets: true,
     unwrap: true,
     args: [
         {
@@ -24,18 +24,15 @@ exports.default = new forgescript_1.NativeFunction({
             return this.customError('ForgeLinked is not initialized');
         let node;
         if (nodeId) {
-            // Try to get a specific node by ID
-            // @ts-ignore - nodes is expected to be a Map-like structure
-            node = linked.nodes?.get?.(String(nodeId));
+            node = linked.nodeManager.nodes.get(String(nodeId));
         }
         else {
-            // Fallback to the first available node
-            // @ts-ignore - nodes is expected to be an iterable of node values
-            const values = linked.nodes?.values?.();
-            node = values ? values.next().value : undefined;
+            node = Array.from(linked.nodeManager.nodes.values())[0];
         }
         if (!node)
             return this.customError('Lavalink node not found');
+        if (!node.connected)
+            return this.customError('Lavalink node is not connected');
         return this.successJSON(node.stats ?? {});
     },
 });

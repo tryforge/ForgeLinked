@@ -29,11 +29,12 @@ exports.default = new forgescript_1.NativeFunction({
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
-        const prev = player.queue.previous[0];
-        console.log(prev?.info.title, player.queue.current);
-        if (prev?.info.identifier == player.queue.current?.info.identifier)
+        const previous = player.queue.previous;
+        if (!previous.length)
             return this.success(false);
-        return this.success(true);
+        const currentId = player.queue.current?.info.identifier;
+        const hasPrev = previous.some((t) => t.info.identifier !== currentId);
+        return this.success(hasPrev);
     },
 });
 //# sourceMappingURL=playerPreviousExists.js.map

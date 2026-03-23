@@ -29,6 +29,7 @@ export interface IForgeLinkedEvents {
     linkedLyricsFound: [Player, any, any];
     linkedLyricsNotFound: [Player, any, any];
     linkedDebug: [string, any];
+    linkedNodeConnect: [any];
 }
 export declare class ForgeLinkedEventHandler<T extends keyof IForgeLinkedEvents> extends BaseEventHandler<IForgeLinkedEvents, T> {
     register(client: ForgeClient): void;

@@ -1,6 +1,6 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
 
-import { ForgeLinked } from '../..'
+import { ForgeLinked } from '../../index.js'
 
 export default new NativeFunction({
   name: '$playerFiltersSetVolume',
@@ -31,10 +31,11 @@ export default new NativeFunction({
     if (!guildId) guildId = ctx.guild
     if (!guildId)
       return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat',
+        'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
       )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
+    if (volume < 0 || volume > 5) return this.customError('Filter volume must be between 0 and 5')
     const res = await player.filterManager.setVolume(volume)
     return this.success(res)
   },

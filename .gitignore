@@ -1,5 +1,4 @@
 node_modules
-src/__tests__
-dist/__tests__
-.env
-__test__/lavalink
+.vscode
+pnpm-lock.yaml
+pnpm-workspace.yaml

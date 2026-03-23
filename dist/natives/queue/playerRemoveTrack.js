@@ -32,6 +32,8 @@ exports.default = new forgescript_1.NativeFunction({
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
+        if (index < 0 || index >= player.queue.tracks.length)
+            return this.customError(`Index out of bounds — queue has ${player.queue.tracks.length} track(s)`);
         player.queue.remove(index);
         return this.success(true);
     },

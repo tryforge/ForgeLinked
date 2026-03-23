@@ -39,11 +39,12 @@ export default new NativeFunction({
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
 
-    // Gather all tracks: previous + queue + current
+    // Only count what's left to be heard: the current track + upcoming queue.
+    // Including previous tracks would make the total grow as more songs play,
+    // which is the opposite of what callers expect from a "remaining time" value.
     const allTracks = [
-      ...(player.queue.previous ?? []),
-      ...(player.queue.tracks ?? []),
       ...(player.queue.current ? [player.queue.current] : []),
+      ...(player.queue.tracks ?? []),
     ]
 
     // Normalize exclusions (convert to lowercase, split by commas or semicolons)

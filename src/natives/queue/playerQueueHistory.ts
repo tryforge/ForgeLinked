@@ -1,6 +1,6 @@
 import { ArgType, NativeFunction } from '@tryforge/forgescript'
 
-import { ForgeLinked } from '../..'
+import { ForgeLinked } from '../../index.js'
 
 export default new NativeFunction({
   name: '$playerQueueHistory',
@@ -24,29 +24,24 @@ export default new NativeFunction({
     if (!guildId) guildId = ctx.guild
     if (!guildId)
       return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat',
+        'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
       )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
 
-    const historyTracks = []
-    const previousTracks = player.queue.previous || []
-    if (previousTracks.length) {
-      for (const track of previousTracks) {
-        historyTracks.push({
-          trackSource: track.info.sourceName,
-          trackTitle: track.info.title,
-          trackAuthor: track.info.author,
-          trackUri: track.info.uri,
-          length: track.info.duration,
-          requester: track.requester,
-        })
-      }
-    }
+    const currentId = player.queue.current?.info.identifier
+    const history = (player.queue.previous ?? [])
+      // Exclude the currently-playing track that lavalink-client pushes into previous[0]
+      .filter((t) => t.info.identifier !== currentId)
+      .map((t) => ({
+        trackSource: t.info.sourceName,
+        trackTitle: t.info.title,
+        trackAuthor: t.info.author,
+        trackUri: t.info.uri,
+        length: t.info.duration,
+        requester: t.requester,
+      }))
 
-    return this.successJSON({
-      guildId: guildId.id,
-      history: historyTracks,
-    })
+    return this.successJSON({ guildId: guildId.id, history })
   },
 })

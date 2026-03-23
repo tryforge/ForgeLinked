@@ -24,7 +24,7 @@ export default new NativeFunction({
     if (!guildId) guildId = ctx.guild
     if (!guildId)
       return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not dms or a group chat',
+        'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
       )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')

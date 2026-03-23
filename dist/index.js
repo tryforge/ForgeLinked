@@ -73,12 +73,31 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
             });
         });
         this.load(path_1.default.join(__dirname, './natives'));
-        client.on('ready', async () => {
-            await new Promise((res) => setTimeout(res, 3000));
-            this.lavalink.init({
-                id: client.user.id,
-                username: client.user.username,
+        client.on('clientReady', async () => {
+            // Register the connect listener BEFORE init() so we never miss a node
+            // connection — including fallback reconnects when one of multiple nodes
+            // fails during initialisation and comes back later.
+            this.lavalink.nodeManager.on('connect', (node) => {
+                const nodeData = {
+                    id: node.id,
+                    info: node.info,
+                };
+                this.emitter.emit('linkedNodeConnect', [nodeData]);
             });
+            try {
+                await this.lavalink.init({
+                    id: client.user.id,
+                    username: client.user.username,
+                });
+            }
+            catch (err) {
+                // One or more nodes failed to connect on startup.
+                // We intentionally do NOT return here — remaining nodes may still be
+                // healthy, and failed nodes will fire 'connect' via the listener above
+                // once they come back (fallback behaviour).
+                forgescript_1.Logger.error('Lavalink failed to initialize:', err);
+                this.emitter.emit('error', err);
+            }
         });
         if (this.options.events?.length) {
             for (const linkedEvent of this.options.events) {

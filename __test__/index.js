@@ -4,15 +4,15 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const lavalink = new ForgeLinked({
-nodes: [
-    {
-        id: "Public Lavalink Server",
-        host: "localhost",
-        port: 3976,
-        authorization: "ZackIsSoCool",
-        secure: false
-    }
-],
+    nodes: [
+        {
+            id: "Public Lavalink Server",
+            host: "localhost",
+            port: 3976,
+            authorization: "ZackIsSoCool",
+            secure: false
+        },
+    ],
     playerOptions: {
         defaultSearchPlatform: "youtube"
     },

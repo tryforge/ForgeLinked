@@ -26,14 +26,19 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.Boolean,
     async execute(ctx, [guildId, newVoiceChannelId]) {
-        const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
-        if (!linked)
-            return this.customError('ForgeLinked is not initialized');
-        const player = linked.getPlayer(guildId.id);
-        if (!player)
-            return this.customError('Player not found');
-        await player.changeVoiceState({ voiceChannelId: newVoiceChannelId.id });
-        return this.success(true);
+        try {
+            const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true)?.lavalink;
+            if (!linked)
+                return this.customError('ForgeLinked is not initialized');
+            const player = linked.getPlayer(guildId.id);
+            if (!player)
+                return this.customError('Player not found');
+            await player.changeVoiceState({ voiceChannelId: newVoiceChannelId.id });
+            return this.success(true);
+        }
+        catch (err) {
+            return this.customError(`Failed to move voice channel: ${err instanceof Error ? err.message : String(err)}`);
+        }
     },
 });
 //# sourceMappingURL=playerMoveVC.js.map

@@ -5,7 +5,7 @@ import { ForgeLinked } from '../../index.js'
 export default new NativeFunction({
   name: '$playerSetRate',
   description:
-    'Set custom filter.timescale#rate . This method disabled both: nightcore & vaporwave. use 1 to reset it to normal',
+    'Set custom filter.timescale#rate. This method disables both: nightcore & vaporwave. Use 1 to reset.',
   version: '2.1.0',
   brackets: true,
   unwrap: true,
@@ -27,17 +27,27 @@ export default new NativeFunction({
   ],
   output: ArgType.Boolean,
   async execute(ctx, [guildId, rate]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
-    if (!linked) return this.customError('ForgeLinked is not initialized')
-    if (!guildId) guildId = ctx.guild
-    if (!guildId)
+    try {
+      const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
+      if (!linked) return this.customError('ForgeLinked is not initialized')
+      if (!guildId) guildId = ctx.guild
+      if (!guildId)
+        return this.customError(
+          'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
+        )
+      const player = linked.getPlayer(guildId.id)
+      if (!player) return this.customError('Player not found')
+      if (!player.node?.connected)
+        return this.customError(
+          'Lavalink node is not connected. Please wait for the node to reconnect.',
+        )
+      if (rate <= 0) return this.customError('Rate must be greater than 0 (use 1 to reset)')
+      const res = await player.filterManager.setRate(rate)
+      return this.success(res)
+    } catch (err) {
       return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
+        `Failed to set rate: ${err instanceof Error ? err.message : String(err)}`,
       )
-    const player = linked.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
-    if (rate <= 0) return this.customError('Rate must be greater than 0 (use 1 to reset)')
-    const res = await player.filterManager.setRate(rate)
-    return this.success(res)
+    }
   },
 })

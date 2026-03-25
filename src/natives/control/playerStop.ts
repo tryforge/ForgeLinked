@@ -25,12 +25,22 @@ export default new NativeFunction({
     },
   ],
   output: ArgType.Boolean,
-  execute(ctx, [guildId, clearQueue]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
-    if (!linked) return this.customError('ForgeLinked is not initialized')
-    const player = linked.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
-    player.stopPlaying(clearQueue)
-    return this.success(true)
+  async execute(ctx, [guildId, clearQueue]) {
+    try {
+      const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
+      if (!linked) return this.customError('ForgeLinked is not initialized')
+      const player = linked.getPlayer(guildId.id)
+      if (!player) return this.customError('Player not found')
+      if (!player.node?.connected)
+        return this.customError(
+          'Lavalink node is not connected. Please wait for the node to reconnect.',
+        )
+      await player.stopPlaying(clearQueue)
+      return this.success(true)
+    } catch (err) {
+      return this.customError(
+        `Failed to stop player: ${err instanceof Error ? err.message : String(err)}`,
+      )
+    }
   },
 })

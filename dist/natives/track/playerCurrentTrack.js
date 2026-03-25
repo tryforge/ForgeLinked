@@ -19,7 +19,7 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.Json,
     execute(ctx, [guildId]) {
-        const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
+        const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true)?.lavalink;
         if (!linked)
             return this.customError('ForgeLinked is not initialized');
         if (!guildId)
@@ -29,7 +29,10 @@ exports.default = new forgescript_1.NativeFunction({
         const player = linked.getPlayer(guildId.id);
         if (!player)
             return this.customError('Player not found');
-        return this.successJSON(player.queue.current?.info);
+        return this.successJSON({
+            ...player.queue.current?.info,
+            ...player.queue.current?.pluginInfo,
+        });
     },
 });
 //# sourceMappingURL=playerCurrentTrack.js.map

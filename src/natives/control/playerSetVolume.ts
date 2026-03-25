@@ -25,13 +25,23 @@ export default new NativeFunction({
     },
   ],
   output: ArgType.Boolean,
-  execute(ctx, [guildId, volume]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
-    if (!linked) return this.customError('ForgeLinked is not initialized')
-    const player = linked.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
-    if (volume < 0 || volume > 1000) return this.customError('Volume must be between 0 and 1000')
-    player.setVolume(volume)
-    return this.success(true)
+  async execute(ctx, [guildId, volume]) {
+    try {
+      const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
+      if (!linked) return this.customError('ForgeLinked is not initialized')
+      const player = linked.getPlayer(guildId.id)
+      if (!player) return this.customError('Player not found')
+      if (!player.node?.connected)
+        return this.customError(
+          'Lavalink node is not connected. Please wait for the node to reconnect.',
+        )
+      if (volume < 0 || volume > 1000) return this.customError('Volume must be between 0 and 1000')
+      await player.setVolume(volume)
+      return this.success(true)
+    } catch (err) {
+      return this.customError(
+        `Failed to set volume: ${err instanceof Error ? err.message : String(err)}`,
+      )
+    }
   },
 })

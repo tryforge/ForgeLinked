@@ -19,7 +19,7 @@ export default new NativeFunction({
   ],
   output: ArgType.Json,
   execute(ctx, [nodeId]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
+    const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
 
     let node: any | undefined

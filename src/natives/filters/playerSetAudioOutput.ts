@@ -34,16 +34,22 @@ export default new NativeFunction({
   ],
   output: ArgType.Boolean,
   execute(ctx, [guildId, audioOutput]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
-    if (!linked) return this.customError('ForgeLinked is not initialized')
-    if (!guildId) guildId = ctx.guild
-    if (!guildId)
+    try {
+      const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
+      if (!linked) return this.customError('ForgeLinked is not initialized')
+      if (!guildId) guildId = ctx.guild
+      if (!guildId)
+        return this.customError(
+          'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
+        )
+      const player = linked.getPlayer(guildId.id)
+      if (!player) return this.customError('Player not found')
+      player.filterManager.setAudioOutput(audioOutput)
+      return this.success()
+    } catch (err) {
       return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
+        `Failed to set audio output: ${err instanceof Error ? err.message : String(err)}`,
       )
-    const player = linked.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
-    player.filterManager.setAudioOutput(audioOutput)
-    return this.success()
+    }
   },
 })

@@ -26,16 +26,26 @@ export default new NativeFunction({
   ],
   output: ArgType.Boolean,
   async execute(ctx, [guildId, rotationHz]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
-    if (!linked) return this.customError('ForgeLinked is not initialized')
-    if (!guildId) guildId = ctx.guild
-    if (!guildId)
+    try {
+      const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
+      if (!linked) return this.customError('ForgeLinked is not initialized')
+      if (!guildId) guildId = ctx.guild
+      if (!guildId)
+        return this.customError(
+          'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
+        )
+      const player = linked.getPlayer(guildId.id)
+      if (!player) return this.customError('Player not found')
+      if (!player.node?.connected)
+        return this.customError(
+          'Lavalink node is not connected. Please wait for the node to reconnect.',
+        )
+      const res = await player.filterManager.toggleRotation(rotationHz as number | undefined)
+      return this.success(res)
+    } catch (err) {
       return this.customError(
-        'Unable to find any guild. Ensure this command was ran inside of a guild and not DMs or a group chat',
+        `Failed to toggle rotation: ${err instanceof Error ? err.message : String(err)}`,
       )
-    const player = linked.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
-    const res = await player.filterManager.toggleRotation(rotationHz as number | undefined)
-    return this.success(res)
+    }
   },
 })

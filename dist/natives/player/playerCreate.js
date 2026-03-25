@@ -61,19 +61,27 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.Boolean,
     async execute(ctx, [guildId, voiceId, textId, volume, selfDeaf, selfMute, node]) {
-        const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
-        if (!linked)
-            return this.customError('ForgeLinked is not initialized');
-        linked.createPlayer({
-            guildId: guildId.id,
-            voiceChannelId: voiceId.id,
-            textChannelId: textId?.id || ctx.channel?.id,
-            volume: volume || 100,
-            selfDeaf: selfDeaf ?? true,
-            selfMute: selfMute || false,
-            node: node || undefined,
-        });
-        return this.success(linked.players.has(guildId.id));
+        try {
+            const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true)?.lavalink;
+            if (!linked)
+                return this.customError('ForgeLinked is not initialized');
+            const connectedNodes = Array.from(linked.nodeManager.nodes.values()).filter((n) => n.connected);
+            if (!connectedNodes.length)
+                return this.customError('No Lavalink nodes are connected. Please wait for a node to connect.');
+            linked.createPlayer({
+                guildId: guildId.id,
+                voiceChannelId: voiceId.id,
+                textChannelId: textId?.id || ctx.channel?.id,
+                volume: volume || 100,
+                selfDeaf: selfDeaf ?? true,
+                selfMute: selfMute || false,
+                node: node || undefined,
+            });
+            return this.success(linked.players.has(guildId.id));
+        }
+        catch (err) {
+            return this.customError(`Failed to create player: ${err instanceof Error ? err.message : String(err)}`);
+        }
     },
 });
 //# sourceMappingURL=playerCreate.js.map

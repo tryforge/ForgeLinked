@@ -48,53 +48,71 @@ export default new NativeFunction({
   ],
   output: ArgType.Json,
   async execute(ctx, [guildId, query, source, requester, limit]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
-    if (!linked) return this.customError('ForgeLinked is not initialized')
+    try {
+      const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
+      if (!linked) return this.customError('ForgeLinked is not initialized')
 
-    const player = linked.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
+      const player = linked.getPlayer(guildId.id)
+      if (!player) return this.customError('Player not found')
+      if (!player.node?.connected)
+        return this.customError(
+          'Lavalink node is not connected. Please wait for the node to reconnect.',
+        )
 
-    const info = await player.node.fetchInfo()
-    const supported = info.sourceManagers || []
-    let finalQuery = query
-
-    if (source) {
-      if (!supported.includes(source)) {
-        return this.customError(`Source '${source}' not supported by the Lavalink server`)
+      let supported: string[] = []
+      try {
+        const info = await player.node.fetchInfo()
+        supported = info?.sourceManagers || []
+      } catch {
+        // If fetchInfo fails, skip source validation and proceed
       }
-      finalQuery = `${source}:${query}`
-    }
 
-    const result = await player.search(finalQuery, {
-      requester: requester?.id ?? ctx.member?.id,
-    })
+      let finalQuery = query
 
-    if (!result.tracks.length) return this.customError('No results found!')
+      if (source) {
+        if (supported.length && !supported.includes(source)) {
+          return this.customError(`Source '${source}' not supported by the Lavalink server`)
+        }
+        finalQuery = `${source}:${query}`
+      }
 
-    let tracks = result.tracks
-    if (limit) tracks = tracks.slice(0, limit)
+      const result = await player
+        .search(finalQuery, {
+          requester: requester?.id ?? ctx.member?.id,
+        })
+        .catch((err: unknown) => {
+          throw new Error(err instanceof Error ? err.message : String(err))
+        })
 
-    return this.successJSON({
-      status: 'success',
-      source,
-      type: result.loadType,
-      message:
-        result.loadType === 'playlist'
-          ? `Found ${tracks.length} tracks from ${result.playlist?.name}`
-          : `Found ${tracks.length} tracks matching the query.`,
-      playlistName: result.loadType === 'playlist' ? result.playlist?.name : null,
-      playlistUri: result.loadType === 'playlist' ? result.playlist?.uri : null,
-      playlistDuration: result.loadType === 'playlist' ? result.playlist?.duration : null,
-      requester: result.tracks[0].requester,
-      trackCount: tracks.length,
-      tracks: tracks.map((track) => ({
-        title: track.info.title,
-        author: track.info.author,
-        duration: track.info.duration,
-        url: track.info.uri,
-        thumbnail: track.info.artworkUrl,
+      if (!result || !result.tracks.length) return this.customError('No results found!')
+
+      let tracks = result.tracks
+      if (limit) tracks = tracks.slice(0, limit)
+
+      return this.successJSON({
+        status: 'success',
         source,
-      })),
-    })
+        type: result.loadType,
+        message:
+          result.loadType === 'playlist'
+            ? `Found ${tracks.length} tracks from ${result.playlist?.name}`
+            : `Found ${tracks.length} tracks matching the query.`,
+        playlistName: result.loadType === 'playlist' ? result.playlist?.name : null,
+        playlistUri: result.loadType === 'playlist' ? result.playlist?.uri : null,
+        playlistDuration: result.loadType === 'playlist' ? result.playlist?.duration : null,
+        requester: result.tracks[0]?.requester ?? null,
+        trackCount: tracks.length,
+        tracks: tracks.map((track) => ({
+          title: track.info.title,
+          author: track.info.author,
+          duration: track.info.duration,
+          url: track.info.uri,
+          thumbnail: track.info.artworkUrl,
+          source,
+        })),
+      })
+    } catch (err) {
+      return this.customError(`Search failed: ${err instanceof Error ? err.message : String(err)}`)
+    }
   },
 })

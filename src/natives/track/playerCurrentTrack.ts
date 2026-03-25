@@ -19,7 +19,7 @@ export default new NativeFunction({
   ],
   output: ArgType.Json,
   execute(ctx, [guildId]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
+    const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
     if (!linked) return this.customError('ForgeLinked is not initialized')
     if (!guildId) guildId = ctx.guild
     if (!guildId)
@@ -30,7 +30,7 @@ export default new NativeFunction({
     if (!player) return this.customError('Player not found')
     return this.successJSON({
       ...player.queue.current?.info,
-      ...player.queue.current?.pluginInfo
+      ...player.queue.current?.pluginInfo,
     })
   },
 })

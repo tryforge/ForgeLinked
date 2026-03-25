@@ -33,28 +33,34 @@ export default new NativeFunction({
   ],
   output: ArgType.Boolean,
   execute(ctx, [guildId, indexA, indexB]) {
-    const linked = ctx.client.getExtension(ForgeLinked, true).lavalink
-    if (!linked) return this.customError('ForgeLinked is not initialized')
-    const player = linked.getPlayer(guildId.id)
-    if (!player) return this.customError('Player not found')
+    try {
+      const linked = ctx.client.getExtension(ForgeLinked, true)?.lavalink
+      if (!linked) return this.customError('ForgeLinked is not initialized')
+      const player = linked.getPlayer(guildId.id)
+      if (!player) return this.customError('Player not found')
 
-    const a = Number(indexA)
-    const b = Number(indexB)
+      const a = Number(indexA)
+      const b = Number(indexB)
 
-    if (
-      !Number.isInteger(a) ||
-      !Number.isInteger(b) ||
-      a < 0 ||
-      b < 0 ||
-      a >= player.queue.tracks.length ||
-      b >= player.queue.tracks.length
-    ) {
-      return this.customError('Invalid indices')
+      if (
+        !Number.isInteger(a) ||
+        !Number.isInteger(b) ||
+        a < 0 ||
+        b < 0 ||
+        a >= player.queue.tracks.length ||
+        b >= player.queue.tracks.length
+      ) {
+        return this.customError('Invalid indices')
+      }
+
+      const tracks = player.queue.tracks
+      ;[tracks[a], tracks[b]] = [tracks[b], tracks[a]]
+
+      return this.success(true)
+    } catch (err) {
+      return this.customError(
+        `Failed to swap tracks: ${err instanceof Error ? err.message : String(err)}`,
+      )
     }
-
-    const tracks = player.queue.tracks
-    ;[tracks[a], tracks[b]] = [tracks[b], tracks[a]]
-
-    return this.success(true)
   },
 })

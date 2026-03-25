@@ -19,7 +19,7 @@ exports.default = new forgescript_1.NativeFunction({
     ],
     output: forgescript_1.ArgType.Json,
     execute(ctx, [guildId]) {
-        const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true).lavalink;
+        const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true)?.lavalink;
         if (!linked)
             return this.customError('ForgeLinked is not initialized');
         if (!guildId)

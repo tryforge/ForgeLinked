@@ -38,7 +38,7 @@ exports.default = new forgescript_1.NativeFunction({
             if (!extension)
                 return this.customError('ForgeLinked extension not found');
             const lavalink = extension.lavalink;
-            let player = lavalink.getPlayer(guildId.id);
+            const player = lavalink.getPlayer(guildId.id);
             if (!player)
                 return this.customError('Player not found for this guild.');
             if (!player.connected) {
@@ -64,7 +64,12 @@ exports.default = new forgescript_1.NativeFunction({
                 player.queue.add(result.tracks[0]);
             }
             if (!player.playing && !player.paused) {
-                await player.play().catch((e) => this.customError(e.message));
+                try {
+                    await player.play();
+                }
+                catch (playErr) {
+                    return this.customError(`Failed to start playback: ${playErr instanceof Error ? playErr.message : String(playErr)}`);
+                }
             }
             const requester = result.tracks[0].requester;
             return this.successJSON({

@@ -40,9 +40,10 @@ export default new NativeFunction({
       if (!extension) return this.customError('ForgeLinked extension not found')
 
       const lavalink = extension.lavalink
-      let player = lavalink.getPlayer(guildId.id)
+      const player = lavalink.getPlayer(guildId.id)
 
       if (!player) return this.customError('Player not found for this guild.')
+
       if (!player.connected) {
         try {
           await player.connect()
@@ -52,6 +53,7 @@ export default new NativeFunction({
           )
         }
       }
+
       const platform = (source || 'ytsearch') as SearchPlatform
       const result = await player.search({ query, source: platform }, ctx.member).catch(() => null)
 
@@ -62,6 +64,7 @@ export default new NativeFunction({
       if (result.loadType === 'error') {
         return this.customError('An error occurred while fetching the track.')
       }
+
       if (result.loadType === 'playlist') {
         player.queue.add(result.tracks)
       } else {
@@ -69,7 +72,13 @@ export default new NativeFunction({
       }
 
       if (!player.playing && !player.paused) {
-        await player.play().catch((e: Error) => this.customError(e.message))
+        try {
+          await player.play()
+        } catch (playErr) {
+          return this.customError(
+            `Failed to start playback: ${playErr instanceof Error ? playErr.message : String(playErr)}`,
+          )
+        }
       }
 
       const requester = result.tracks[0].requester as User

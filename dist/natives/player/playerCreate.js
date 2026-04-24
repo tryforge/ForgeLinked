@@ -68,7 +68,7 @@ exports.default = new forgescript_1.NativeFunction({
             const connectedNodes = Array.from(linked.nodeManager.nodes.values()).filter((n) => n.connected);
             if (!connectedNodes.length)
                 return this.customError('No Lavalink nodes are connected. Please wait for a node to connect.');
-            linked.createPlayer({
+            const player = linked.createPlayer({
                 guildId: guildId.id,
                 voiceChannelId: voiceId.id,
                 textChannelId: textId?.id || ctx.channel?.id,
@@ -77,6 +77,7 @@ exports.default = new forgescript_1.NativeFunction({
                 selfMute: selfMute || false,
                 node: node || undefined,
             });
+            await player.connect();
             return this.success(linked.players.has(guildId.id));
         }
         catch (err) {

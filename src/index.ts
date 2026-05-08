@@ -24,7 +24,18 @@ export interface ForgeLinkSetupOptions {
   autoSkipOnResolveError?: boolean
   emitNewSongsOnly?: boolean
   requesterTransformer?: (requester: unknown) => unknown
+  /**
+   * Custom autoplay function. When provided, this fully overrides the built-in
+   * autoplay behaviour. The function receives the player and the last played
+   * track and should add at least one track to the queue to keep playback going.
+   */
   autoPlayFunction?: (player: Player, lastPlayedTrack: Track) => Promise<void>
+  /**
+   * Default search platform used by the built-in autoplay engine when looking
+   * up related tracks. Defaults to the player's `defaultSearchPlatform`.
+   * Common values: `'ytsearch'`, `'ytmsearch'`, `'scsearch'`.
+   */
+  defaultAutoPlaySource?: SearchPlatform
   events?: Array<keyof IForgeLinkedEvents>
   playerOptions?: {
     applyVolumeAsFilter?: boolean
@@ -59,7 +70,7 @@ export type TransformEvents<T> = {
 export class ForgeLinked extends ForgeExtension {
   name = 'ForgeLink'
   description = 'ForgeScript integration with lavalink-client'
-  version = '2.2.1'
+  version = '2.3.0'
 
   public client!: ForgeClient
   public lavalink!: LavalinkManager
@@ -99,7 +110,7 @@ export class ForgeLinked extends ForgeExtension {
         },
         onEmptyQueue: {
           destroyAfterMs: this.options.playerOptions?.onEmptyQueue?.destroyAfterMs ?? 30000,
-          autoPlayFunction: this.options.autoPlayFunction,
+          autoPlayFunction: this._buildAutoPlayFunction(),
         },
       },
       queueOptions: {
@@ -125,7 +136,7 @@ export class ForgeLinked extends ForgeExtension {
     this.load(path.join(__dirname, './natives'))
     client.on('clientReady', async () => {
       // Register the connect listener BEFORE init() so we never miss a node
-      // connection — including fallback reconnects when one of multiple nodes
+      // connection - including fallback reconnects when one of multiple nodes
       // fails during initialisation and comes back later.
       this.lavalink.nodeManager.on('connect', (node) => {
         const nodeData = {
@@ -143,7 +154,7 @@ export class ForgeLinked extends ForgeExtension {
         })
       } catch (err) {
         // One or more nodes failed to connect on startup.
-        // We intentionally do NOT return here — remaining nodes may still be
+        // We intentionally do NOT return here - remaining nodes may still be
         // healthy, and failed nodes will fire 'connect' via the listener above
         // once they come back (fallback behaviour).
         Logger.error('Lavalink failed to initialize:', err)
@@ -166,6 +177,188 @@ export class ForgeLinked extends ForgeExtension {
       Logger.error('Lavalink Error:', error)
     })
     console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`)
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /*  Recommendation-based autoplay engine                                   */
+  /* ---------------------------------------------------------------------- */
+
+  /**
+   * Detects which LavaSrc recommendation source to use (`sprec`, `dzrec`, …)
+   * based on the URI of the last played track, and returns the full query
+   * string to pass to `player.search()`.
+   *
+   * Returns `null` when the URI doesn't match any known recommendation source;
+   * the caller will fall back to a YouTube Music radio search in that case.
+   *
+   * Platform coverage (requires LavaSrc plugin on the Lavalink server):
+   *   Spotify     → sprec:<trackId>
+   *   Deezer      → dzrec:<trackId>
+   *   Apple Music → amsearch:<title author> (no native rec prefix in LavaSrc)
+   *   Yandex      → ymrec:<trackId>
+   *   VK Music    → vkrec:<trackId>
+   *   Tidal       → tdrec:<trackId>
+   *   Qobuz       → qbrec:<trackId>
+   *   Pandora     → pdrec:<trackId>
+   *   JioSaavn    → jsrec:<trackId>
+   */
+  private _resolveRecQuery(
+    uri: string,
+    title: string,
+    author: string,
+  ): { query: string; source: SearchPlatform } | null {
+    // ── Spotify ─────────────────────────────────────────────────────────────
+    const spotifyMatch =
+      uri.match(/open\.spotify\.com\/track\/([A-Za-z0-9]+)/) ??
+      uri.match(/spotify:track:([A-Za-z0-9]+)/)
+    if (spotifyMatch) return { query: spotifyMatch[1], source: 'sprec' as SearchPlatform }
+
+    // ── Deezer ──────────────────────────────────────────────────────────────
+    const deezerMatch = uri.match(/deezer\.com\/(?:\w+\/)?track\/(\d+)/)
+    if (deezerMatch) return { query: deezerMatch[1], source: 'dzrec' as SearchPlatform }
+
+    // ── Yandex Music ────────────────────────────────────────────────────────
+    const yandexMatch = uri.match(/music\.yandex\.[a-z]+\/album\/\d+\/track\/(\d+)/)
+    if (yandexMatch) return { query: yandexMatch[1], source: 'ymrec' as SearchPlatform }
+
+    // ── VK Music ────────────────────────────────────────────────────────────
+    const vkMatch = uri.match(/vk\.com\/audio(-?\d+_\d+)/)
+    if (vkMatch) return { query: vkMatch[1], source: 'vkrec' as SearchPlatform }
+
+    // ── Tidal ────────────────────────────────────────────────────────────────
+    const tidalMatch = uri.match(/tidal\.com\/(?:\w+\/)?track\/(\d+)/)
+    if (tidalMatch) return { query: tidalMatch[1], source: 'tdrec' as SearchPlatform }
+
+    // ── Qobuz ───────────────────────────────────────────────────────────────
+    const qobuzMatch = uri.match(/qobuz\.com\/(?:\w+-\w+\/)?track\/([A-Za-z0-9]+)/)
+    if (qobuzMatch) return { query: qobuzMatch[1], source: 'qbrec' as SearchPlatform }
+
+    // ── Pandora ──────────────────────────────────────────────────────────────
+    const pandoraMatch = uri.match(/pandora\.com\/.*\/TR:(\d+)/)
+    if (pandoraMatch) return { query: pandoraMatch[1], source: 'pdrec' as SearchPlatform }
+
+    // ── JioSaavn ────────────────────────────────────────────────────────────
+    if (uri.includes('jiosaavn.com') || uri.includes('saavn.com')) {
+      // JioSaavn rec uses song title + author as the seed query
+      return { query: `${title} ${author}`.trim(), source: 'jsrec' as SearchPlatform }
+    }
+
+    return null
+  }
+
+  /**
+   * Builds the autoplay function passed to lavalink-client's `onEmptyQueue`.
+   *
+   * Priority:
+   *   1. User-supplied `autoPlayFunction` → used as-is (full override).
+   *   2. Built-in recommendation engine (only fires when `player.autoPlay === true`):
+   *      a. Detect track's source → use platform-native `{platform}rec:{id}` (LavaSrc).
+   *      b. YouTube / YouTube Music → `ytmsearch:{videoUrl}` (YTM radio/related tracks).
+   *      c. SoundCloud → `scsearch:{title} {author} related`.
+   *      d. Generic fallback → configured `defaultAutoPlaySource` or `ytmsearch`.
+   *      Results are deduplicated against the current queue + play history.
+   */
+  private _buildAutoPlayFunction():
+    | ((player: Player, lastPlayedTrack: Track) => Promise<void>)
+    | undefined {
+    if (this.options.autoPlayFunction) return this.options.autoPlayFunction
+
+    return async (player: Player, lastPlayedTrack: Track): Promise<void> => {
+      if (!(player as any).autoPlay) return
+
+      try {
+        const { uri = '', title = '', author = '' } = lastPlayedTrack.info
+
+        /* ── 1. Build the recommendation query ─────────────────────────── */
+        let query: string
+        let source: SearchPlatform
+
+        // LavaSrc platform-native recommendations
+        const recResolved = this._resolveRecQuery(uri, title, author)
+
+        if (recResolved) {
+          // Native LavaSrc rec — seed with the track id / title
+          query = recResolved.query
+          source = recResolved.source
+        } else if (
+          uri.includes('youtube.com') ||
+          uri.includes('youtu.be') ||
+          uri.startsWith('https://www.youtube')
+        ) {
+          // YouTube / YouTube Music → ytmsearch:{videoUrl} triggers YTM radio
+          query = uri
+          source = 'ytmsearch' as SearchPlatform
+        } else if (uri.includes('soundcloud.com')) {
+          // SoundCloud — search for related tracks by genre/title
+          query = `${title} ${author}`.trim()
+          source = 'scsearch' as SearchPlatform
+        } else {
+          // Generic fallback: honour user config or default to ytmsearch
+          source =
+            this.options.defaultAutoPlaySource ??
+            (this.options.playerOptions?.defaultSearchPlatform as SearchPlatform | undefined) ??
+            ('ytmsearch' as SearchPlatform)
+          query = `${title} ${author}`.trim() || 'popular music'
+        }
+
+        /* ── 2. Fetch recommendations ───────────────────────────────────── */
+        const result = await player
+          .search({ query, source }, lastPlayedTrack.requester)
+          .catch(() => null)
+
+        if (
+          !result ||
+          !result.tracks.length ||
+          result.loadType === 'empty' ||
+          result.loadType === 'error'
+        ) {
+          // Platform rec failed — graceful fallback to ytmsearch title query
+          if (recResolved) {
+            const fallback = await player
+              .search(
+                { query: `${title} ${author}`.trim(), source: 'ytmsearch' as SearchPlatform },
+                lastPlayedTrack.requester,
+              )
+              .catch(() => null)
+
+            if (!fallback?.tracks.length) {
+              Logger.warn(`ForgeLinked autoplay: no recommendations found for "${title}"`)
+              return
+            }
+
+            const fbTrack = fallback.tracks[0]
+            player.queue.add(fbTrack)
+            return
+          }
+
+          Logger.warn(`ForgeLinked autoplay: no results found for "${query}"`)
+          return
+        }
+
+        /* ── 3. Deduplicate against queue + history ─────────────────────── */
+        const played = new Set<string>([
+          ...(player.queue.previous?.map((t: any) => t.info?.uri).filter(Boolean) ?? []),
+          uri, // the track that just ended
+        ])
+
+        const queued = new Set<string>(
+          player.queue.tracks?.map((t: any) => t.info?.uri).filter(Boolean) ?? [],
+        )
+
+        const fresh = result.tracks.filter(
+          (t: any) => !played.has(t.info?.uri) && !queued.has(t.info?.uri),
+        )
+
+        const pool = fresh.length ? fresh : result.tracks
+        // Pick a random candidate from the top 10 for variety
+        const candidates = pool.slice(0, 10)
+        const pick = candidates[Math.floor(Math.random() * candidates.length)]
+
+        player.queue.add(pick)
+      } catch (err) {
+        Logger.error('ForgeLinked autoplay error:', err)
+      }
+    }
   }
 }
 

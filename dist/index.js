@@ -16,7 +16,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
     options;
     name = 'ForgeLink';
     description = 'ForgeScript integration with lavalink-client';
-    version = '2.2.1';
+    version = '2.3.0';
     client;
     lavalink;
     commands;
@@ -52,7 +52,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
                 },
                 onEmptyQueue: {
                     destroyAfterMs: this.options.playerOptions?.onEmptyQueue?.destroyAfterMs ?? 30000,
-                    autoPlayFunction: this.options.autoPlayFunction,
+                    autoPlayFunction: this._buildAutoPlayFunction(),
                 },
             },
             queueOptions: {
@@ -75,7 +75,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
         this.load(path_1.default.join(__dirname, './natives'));
         client.on('clientReady', async () => {
             // Register the connect listener BEFORE init() so we never miss a node
-            // connection — including fallback reconnects when one of multiple nodes
+            // connection - including fallback reconnects when one of multiple nodes
             // fails during initialisation and comes back later.
             this.lavalink.nodeManager.on('connect', (node) => {
                 const nodeData = {
@@ -92,7 +92,7 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
             }
             catch (err) {
                 // One or more nodes failed to connect on startup.
-                // We intentionally do NOT return here — remaining nodes may still be
+                // We intentionally do NOT return here - remaining nodes may still be
                 // healthy, and failed nodes will fire 'connect' via the listener above
                 // once they come back (fallback behaviour).
                 forgescript_1.Logger.error('Lavalink failed to initialize:', err);
@@ -113,6 +113,152 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
             forgescript_1.Logger.error('Lavalink Error:', error);
         });
         console.debug(`ForgeLink: Initialized in ${Date.now() - start}ms`);
+    }
+    /* ---------------------------------------------------------------------- */
+    /*  Recommendation-based autoplay engine                                   */
+    /* ---------------------------------------------------------------------- */
+    /**
+     * Detects which LavaSrc recommendation source to use (`sprec`, `dzrec`, …)
+     * based on the URI of the last played track, and returns the full query
+     * string to pass to `player.search()`.
+     *
+     * Returns `null` when the URI doesn't match any known recommendation source;
+     * the caller will fall back to a YouTube Music radio search in that case.
+     *
+     * Platform coverage (requires LavaSrc plugin on the Lavalink server):
+     *   Spotify     → sprec:<trackId>
+     *   Deezer      → dzrec:<trackId>
+     *   Apple Music → amsearch:<title author> (no native rec prefix in LavaSrc)
+     *   Yandex      → ymrec:<trackId>
+     *   VK Music    → vkrec:<trackId>
+     *   Tidal       → tdrec:<trackId>
+     *   Qobuz       → qbrec:<trackId>
+     *   Pandora     → pdrec:<trackId>
+     *   JioSaavn    → jsrec:<trackId>
+     */
+    _resolveRecQuery(uri, title, author) {
+        // ── Spotify ─────────────────────────────────────────────────────────────
+        const spotifyMatch = uri.match(/open\.spotify\.com\/track\/([A-Za-z0-9]+)/)
+            ?? uri.match(/spotify:track:([A-Za-z0-9]+)/);
+        if (spotifyMatch)
+            return { query: spotifyMatch[1], source: 'sprec' };
+        // ── Deezer ──────────────────────────────────────────────────────────────
+        const deezerMatch = uri.match(/deezer\.com\/(?:\w+\/)?track\/(\d+)/);
+        if (deezerMatch)
+            return { query: deezerMatch[1], source: 'dzrec' };
+        // ── Yandex Music ────────────────────────────────────────────────────────
+        const yandexMatch = uri.match(/music\.yandex\.[a-z]+\/album\/\d+\/track\/(\d+)/);
+        if (yandexMatch)
+            return { query: yandexMatch[1], source: 'ymrec' };
+        // ── VK Music ────────────────────────────────────────────────────────────
+        const vkMatch = uri.match(/vk\.com\/audio(-?\d+_\d+)/);
+        if (vkMatch)
+            return { query: vkMatch[1], source: 'vkrec' };
+        // ── Tidal ────────────────────────────────────────────────────────────────
+        const tidalMatch = uri.match(/tidal\.com\/(?:\w+\/)?track\/(\d+)/);
+        if (tidalMatch)
+            return { query: tidalMatch[1], source: 'tdrec' };
+        // ── Qobuz ───────────────────────────────────────────────────────────────
+        const qobuzMatch = uri.match(/qobuz\.com\/(?:\w+-\w+\/)?track\/([A-Za-z0-9]+)/);
+        if (qobuzMatch)
+            return { query: qobuzMatch[1], source: 'qbrec' };
+        // ── Pandora ──────────────────────────────────────────────────────────────
+        const pandoraMatch = uri.match(/pandora\.com\/.*\/TR:(\d+)/);
+        if (pandoraMatch)
+            return { query: pandoraMatch[1], source: 'pdrec' };
+        // ── JioSaavn ────────────────────────────────────────────────────────────
+        if (uri.includes('jiosaavn.com') || uri.includes('saavn.com')) {
+            // JioSaavn rec uses song title + author as the seed query
+            return { query: `${title} ${author}`.trim(), source: 'jsrec' };
+        }
+        return null;
+    }
+    /**
+     * Builds the autoplay function passed to lavalink-client's `onEmptyQueue`.
+     *
+     * Priority:
+     *   1. User-supplied `autoPlayFunction` → used as-is (full override).
+     *   2. Built-in recommendation engine (only fires when `player.autoPlay === true`):
+     *      a. Detect track's source → use platform-native `{platform}rec:{id}` (LavaSrc).
+     *      b. YouTube / YouTube Music → `ytmsearch:{videoUrl}` (YTM radio/related tracks).
+     *      c. SoundCloud → `scsearch:{title} {author} related`.
+     *      d. Generic fallback → configured `defaultAutoPlaySource` or `ytmsearch`.
+     *      Results are deduplicated against the current queue + play history.
+     */
+    _buildAutoPlayFunction() {
+        if (this.options.autoPlayFunction)
+            return this.options.autoPlayFunction;
+        return async (player, lastPlayedTrack) => {
+            if (!player.autoPlay)
+                return;
+            try {
+                const { uri = '', title = '', author = '' } = lastPlayedTrack.info;
+                /* ── 1. Build the recommendation query ─────────────────────────── */
+                let query;
+                let source;
+                // LavaSrc platform-native recommendations
+                const recResolved = this._resolveRecQuery(uri, title, author);
+                if (recResolved) {
+                    // Native LavaSrc rec — seed with the track id / title
+                    query = recResolved.query;
+                    source = recResolved.source;
+                }
+                else if (uri.includes('youtube.com') || uri.includes('youtu.be') || uri.startsWith('https://www.youtube')) {
+                    // YouTube / YouTube Music → ytmsearch:{videoUrl} triggers YTM radio
+                    query = uri;
+                    source = 'ytmsearch';
+                }
+                else if (uri.includes('soundcloud.com')) {
+                    // SoundCloud — search for related tracks by genre/title
+                    query = `${title} ${author}`.trim();
+                    source = 'scsearch';
+                }
+                else {
+                    // Generic fallback: honour user config or default to ytmsearch
+                    source =
+                        this.options.defaultAutoPlaySource ??
+                            this.options.playerOptions?.defaultSearchPlatform ??
+                            'ytmsearch';
+                    query = `${title} ${author}`.trim() || 'popular music';
+                }
+                /* ── 2. Fetch recommendations ───────────────────────────────────── */
+                const result = await player
+                    .search({ query, source }, lastPlayedTrack.requester)
+                    .catch(() => null);
+                if (!result || !result.tracks.length || result.loadType === 'empty' || result.loadType === 'error') {
+                    // Platform rec failed — graceful fallback to ytmsearch title query
+                    if (recResolved) {
+                        const fallback = await player
+                            .search({ query: `${title} ${author}`.trim(), source: 'ytmsearch' }, lastPlayedTrack.requester)
+                            .catch(() => null);
+                        if (!fallback?.tracks.length) {
+                            forgescript_1.Logger.warn(`ForgeLinked autoplay: no recommendations found for "${title}"`);
+                            return;
+                        }
+                        const fbTrack = fallback.tracks[0];
+                        player.queue.add(fbTrack);
+                        return;
+                    }
+                    forgescript_1.Logger.warn(`ForgeLinked autoplay: no results found for "${query}"`);
+                    return;
+                }
+                /* ── 3. Deduplicate against queue + history ─────────────────────── */
+                const played = new Set([
+                    ...(player.queue.previous?.map((t) => t.info?.uri).filter(Boolean) ?? []),
+                    uri, // the track that just ended
+                ]);
+                const queued = new Set(player.queue.tracks?.map((t) => t.info?.uri).filter(Boolean) ?? []);
+                const fresh = result.tracks.filter((t) => !played.has(t.info?.uri) && !queued.has(t.info?.uri));
+                const pool = fresh.length ? fresh : result.tracks;
+                // Pick a random candidate from the top 10 for variety
+                const candidates = pool.slice(0, 10);
+                const pick = candidates[Math.floor(Math.random() * candidates.length)];
+                player.queue.add(pick);
+            }
+            catch (err) {
+                forgescript_1.Logger.error('ForgeLinked autoplay error:', err);
+            }
+        };
     }
 }
 exports.ForgeLinked = ForgeLinked;

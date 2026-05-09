@@ -138,8 +138,8 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
      */
     _resolveRecQuery(uri, title, author) {
         // ── Spotify ─────────────────────────────────────────────────────────────
-        const spotifyMatch = uri.match(/open\.spotify\.com\/track\/([A-Za-z0-9]+)/)
-            ?? uri.match(/spotify:track:([A-Za-z0-9]+)/);
+        const spotifyMatch = uri.match(/open\.spotify\.com\/track\/([A-Za-z0-9]+)/) ??
+            uri.match(/spotify:track:([A-Za-z0-9]+)/);
         if (spotifyMatch)
             return { query: spotifyMatch[1], source: 'sprec' };
         // ── Deezer ──────────────────────────────────────────────────────────────
@@ -203,7 +203,9 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
                     query = recResolved.query;
                     source = recResolved.source;
                 }
-                else if (uri.includes('youtube.com') || uri.includes('youtu.be') || uri.startsWith('https://www.youtube')) {
+                else if (uri.includes('youtube.com') ||
+                    uri.includes('youtu.be') ||
+                    uri.startsWith('https://www.youtube')) {
                     // YouTube / YouTube Music → ytmsearch:{videoUrl} triggers YTM radio
                     query = uri;
                     source = 'ytmsearch';
@@ -225,7 +227,10 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
                 const result = await player
                     .search({ query, source }, lastPlayedTrack.requester)
                     .catch(() => null);
-                if (!result || !result.tracks.length || result.loadType === 'empty' || result.loadType === 'error') {
+                if (!result ||
+                    !result.tracks.length ||
+                    result.loadType === 'empty' ||
+                    result.loadType === 'error') {
                     // Platform rec failed — graceful fallback to ytmsearch title query
                     if (recResolved) {
                         const fallback = await player

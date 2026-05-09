@@ -4,6 +4,7 @@ import { ForgeLinked } from '../../index.js'
 
 export default new NativeFunction({
   name: '$playerShuffleQueue',
+  aliases: ['$playerShuffle'],
   description: 'Randomize the order of tracks in the queue',
   version: '2.1.0',
   brackets: false,

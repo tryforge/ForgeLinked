@@ -4,6 +4,7 @@ const forgescript_1 = require("@tryforge/forgescript");
 const index_js_1 = require("../../index.js");
 exports.default = new forgescript_1.NativeFunction({
     name: '$playerShuffleQueue',
+    aliases: ['$playerShuffle'],
     description: 'Randomize the order of tracks in the queue',
     version: '2.1.0',
     brackets: false,

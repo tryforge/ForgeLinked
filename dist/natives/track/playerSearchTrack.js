@@ -50,21 +50,12 @@ exports.default = new forgescript_1.NativeFunction({
         try {
             const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true)?.lavalink;
             if (!linked)
-                return this.successJSON({
-                    status: 'error',
-                    message: 'ForgeLinked is not initialized',
-                });
+                return this.customError('ForgeLinked is not initialized');
             const player = linked.getPlayer(guildId.id);
             if (!player)
-                return this.successJSON({
-                    status: 'error',
-                    message: 'Player not found',
-                });
+                return this.customError('Player not found');
             if (!player.node?.connected)
-                return this.successJSON({
-                    status: 'error',
-                    message: 'Lavalink node is not connected. Please wait for the node to reconnect.',
-                });
+                return this.customError('Lavalink node is not connected. Please wait for the node to reconnect.');
             let supported = [];
             try {
                 const info = await player.node.fetchInfo();
@@ -76,10 +67,7 @@ exports.default = new forgescript_1.NativeFunction({
             let finalQuery = query;
             if (source) {
                 if (supported.length && !supported.includes(source)) {
-                    return this.successJSON({
-                        status: 'error',
-                        message: `Source '${source}' not supported by the Lavalink server`,
-                    });
+                    return this.customError(`Source '${source}' not supported by the Lavalink server`);
                 }
                 finalQuery = `${source}:${query}`;
             }
@@ -87,17 +75,11 @@ exports.default = new forgescript_1.NativeFunction({
                 .search(finalQuery, {
                 requester: requester?.id ?? ctx.member?.id,
             })
-                .catch((err) => (err instanceof Error ? err.message : String(err)));
-            if (typeof result === 'string')
-                return this.successJSON({
-                    status: 'error',
-                    message: result,
-                });
+                .catch((err) => {
+                throw new Error(err instanceof Error ? err.message : String(err));
+            });
             if (!result || !result.tracks.length)
-                return this.successJSON({
-                    status: 'error',
-                    message: 'No results found!',
-                });
+                return this.customError('No results found!');
             let tracks = result.tracks;
             if (limit)
                 tracks = tracks.slice(0, limit);
@@ -124,10 +106,7 @@ exports.default = new forgescript_1.NativeFunction({
             });
         }
         catch (err) {
-            return this.successJSON({
-                status: 'error',
-                message: `Search failed: ${err instanceof Error ? err.message : String(err)}`,
-            });
+            return this.customError(`Search failed: ${err instanceof Error ? err.message : String(err)}`);
         }
     },
 });

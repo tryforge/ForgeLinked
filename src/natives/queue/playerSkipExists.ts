@@ -28,6 +28,7 @@ export default new NativeFunction({
       )
     const player = linked.getPlayer(guildId.id)
     if (!player) return this.customError('Player not found')
-    return this.success(player.queue.tracks.length >= 1)
+    // Consider autoplay as "next track exists", autoplay will queue one when needed
+    return this.success(player.queue.tracks.length >= 1 || (player as any).autoPlay === true)
   },
 })

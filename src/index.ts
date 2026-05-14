@@ -292,6 +292,9 @@ export class ForgeLinked extends ForgeExtension {
           // SoundCloud — search for related tracks by genre/title
           query = `${title} ${author}`.trim()
           source = 'scsearch' as SearchPlatform
+        } else if (uri.startsWith('http')) {
+          query = uri
+          source = this.options.defaultAutoPlaySource ?? ('ytmsearch' as SearchPlatform)
         } else {
           // Generic fallback: honour user config or default to ytmsearch
           source =
@@ -349,8 +352,40 @@ export class ForgeLinked extends ForgeExtension {
           (t: any) => !played.has(t.info?.uri) && !queued.has(t.info?.uri),
         )
 
-        const pool = fresh.length ? fresh : result.tracks
-        // Pick a random candidate from the top 10 for variety
+        if (!fresh.length && !recResolved && query === uri) {
+          const textFallback = await player
+            .search(
+              {
+                query: `${title} ${author}`.trim() || 'popular music',
+                source: 'ytmsearch' as SearchPlatform,
+              },
+              lastPlayedTrack.requester,
+            )
+            .catch(() => null)
+
+          if (textFallback?.tracks.length) {
+            const freshFb = textFallback.tracks.filter(
+              (t: any) => !played.has(t.info?.uri) && !queued.has(t.info?.uri),
+            )
+            // Exclude the exact track that just ended as a hard filter
+            const poolFb = (freshFb.length ? freshFb : textFallback.tracks).filter(
+              (t: any) => t.info?.uri !== uri,
+            )
+            if (poolFb.length) {
+              const pickFb = poolFb.slice(0, 10)[
+                Math.floor(Math.random() * Math.min(poolFb.length, 10))
+              ]
+              player.queue.add(pickFb)
+              return
+            }
+          }
+        }
+
+        const pool = fresh.length ? fresh : result.tracks.filter((t: any) => t.info?.uri !== uri)
+        if (!pool.length) {
+          Logger.warn(`ForgeLinked autoplay: all candidates were duplicates for "${title}"`)
+          return
+        }
         const candidates = pool.slice(0, 10)
         const pick = candidates[Math.floor(Math.random() * candidates.length)]
 

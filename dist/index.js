@@ -215,6 +215,10 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
                     query = `${title} ${author}`.trim();
                     source = 'scsearch';
                 }
+                else if (uri.startsWith('http')) {
+                    query = uri;
+                    source = this.options.defaultAutoPlaySource ?? 'ytmsearch';
+                }
                 else {
                     // Generic fallback: honour user config or default to ytmsearch
                     source =
@@ -254,8 +258,29 @@ class ForgeLinked extends forgescript_1.ForgeExtension {
                 ]);
                 const queued = new Set(player.queue.tracks?.map((t) => t.info?.uri).filter(Boolean) ?? []);
                 const fresh = result.tracks.filter((t) => !played.has(t.info?.uri) && !queued.has(t.info?.uri));
-                const pool = fresh.length ? fresh : result.tracks;
-                // Pick a random candidate from the top 10 for variety
+                if (!fresh.length && !recResolved && query === uri) {
+                    const textFallback = await player
+                        .search({
+                        query: `${title} ${author}`.trim() || 'popular music',
+                        source: 'ytmsearch',
+                    }, lastPlayedTrack.requester)
+                        .catch(() => null);
+                    if (textFallback?.tracks.length) {
+                        const freshFb = textFallback.tracks.filter((t) => !played.has(t.info?.uri) && !queued.has(t.info?.uri));
+                        // Exclude the exact track that just ended as a hard filter
+                        const poolFb = (freshFb.length ? freshFb : textFallback.tracks).filter((t) => t.info?.uri !== uri);
+                        if (poolFb.length) {
+                            const pickFb = poolFb.slice(0, 10)[Math.floor(Math.random() * Math.min(poolFb.length, 10))];
+                            player.queue.add(pickFb);
+                            return;
+                        }
+                    }
+                }
+                const pool = fresh.length ? fresh : result.tracks.filter((t) => t.info?.uri !== uri);
+                if (!pool.length) {
+                    forgescript_1.Logger.warn(`ForgeLinked autoplay: all candidates were duplicates for "${title}"`);
+                    return;
+                }
                 const candidates = pool.slice(0, 10);
                 const pick = candidates[Math.floor(Math.random() * candidates.length)];
                 player.queue.add(pick);

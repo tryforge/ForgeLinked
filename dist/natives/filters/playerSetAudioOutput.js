@@ -32,7 +32,6 @@ exports.default = new forgescript_1.NativeFunction({
             rest: false,
         },
     ],
-    output: forgescript_1.ArgType.Boolean,
     execute(ctx, [guildId, audioOutput]) {
         try {
             const linked = ctx.client.getExtension(index_js_1.ForgeLinked, true)?.lavalink;

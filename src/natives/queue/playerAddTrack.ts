@@ -54,8 +54,7 @@ export default new NativeFunction({
         }
       }
 
-      const platform = (source || 'ytsearch') as SearchPlatform
-      const result = await player.search({ query, source: platform }, ctx.member).catch(() => null)
+      const result = await player.search({ query, source: source as SearchPlatform }, ctx.member).catch(() => null)
 
       if (!result || !result.tracks.length || result.loadType === 'empty') {
         return this.customError('No results found for the provided query.')
